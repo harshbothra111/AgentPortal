@@ -1,0 +1,223 @@
+{
+  "meta": {
+    "schemaVersion": "auto-journey-v2",
+    "generatedAt": "2025-11-21T12:45:00Z",
+    "locale": "en-US",
+    "currency": "USD",
+    "environment": "staging",
+    "correlationId": "${GENERATED}" 
+  },
+  "product": {
+    "code": "AUTO_4W",
+    "name": "Auto Insurance (4 Wheeler)",
+    "journeyVersion": "2026-R1",
+    "channel": "agentPortal"
+  },
+  "dictionaries": {
+    "lookups": {
+      "vehicleMakes": [ { "id": "HON", "label": "Honda" }, { "id": "TOY", "label": "Toyota" }, { "id": "FOR", "label": "Ford" }, { "id": "TES", "label": "Tesla" } ],
+      "vehicleModels": {
+        "HON": [ { "id": "CIV", "label": "Civic" }, { "id": "ACC", "label": "Accord" } ],
+        "TOY": [ { "id": "COR", "label": "Corolla" }, { "id": "CAM", "label": "Camry" } ],
+        "FOR": [ { "id": "F150", "label": "F-150" }, { "id": "MUS", "label": "Mustang" } ],
+        "TES": [ { "id": "M3", "label": "Model 3" }, { "id": "MY", "label": "Model Y" } ]
+      },
+      "vehicleYears": [2026,2025,2024,2023,2022,2021,2020,2019,2018,2015],
+      "fuelTypes": [ { "id": "GAS", "label": "Gasoline" }, { "id": "ELEC", "label": "Electric" }, { "id": "HYB", "label": "Hybrid" } ],
+      "states": [ { "id": "CA", "label": "California" }, { "id": "TX", "label": "Texas" }, { "id": "NY", "label": "New York" }, { "id": "FL", "label": "Florida" } ],
+      "licenseStatuses": [ { "id": "VALID", "label": "Valid" }, { "id": "SUSP", "label": "Suspended" } ],
+      "maritalStatuses": [ { "id": "S", "label": "Single" }, { "id": "M", "label": "Married" } ],
+      "coverageTypes": [ { "id": "LIAB", "label": "Liability" }, { "id": "COMP", "label": "Comprehensive" }, { "id": "COLL", "label": "Collision" }, { "id": "UM", "label": "Uninsured Motorist" } ],
+      "deductibles": [ { "id": 250, "label": "$250" }, { "id": 500, "label": "$500" }, { "id": 1000, "label": "$1,000" } ],
+      "paymentPlans": [ { "id": "ANNUAL", "label": "Annual" }, { "id": "SEMI", "label": "Semi-Annual" }, { "id": "MONTHLY", "label": "Monthly" } ],
+      "cardTypes": [ { "id": "VISA", "label": "Visa" }, { "id": "MC", "label": "Mastercard" }, { "id": "AMEX", "label": "AmEx" } ]
+    }
+  },
+  "journey": {
+    "workflows": [
+      {
+        "id": "WF_QUOTE",
+        "key": "quote",
+        "title": "Quote Basics",
+        "order": 1,
+        "steps": [
+          {
+            "id": "STEP_VEHICLE",
+            "key": "vehicle",
+            "title": "Vehicle Details",
+            "order": 1,
+            "controls": [
+              { "id": "vehicle-make", "key": "vehicle.make", "label": "Make", "type": "select", "lookupRef": "vehicleMakes", "visible": true, "editable": true, "required": true, "order": 1 },
+              { "id": "vehicle-model", "key": "vehicle.model", "label": "Model", "type": "select", "lookupRef": "vehicleModels", "visible": true, "editable": true, "required": true, "order": 2 },
+              { "id": "vehicle-year", "key": "vehicle.year", "label": "Year", "type": "select", "lookupRef": "vehicleYears", "visible": true, "editable": true, "required": true, "order": 3 },
+              { "id": "vehicle-fuel", "key": "vehicle.fuelType", "label": "Fuel Type", "type": "select", "lookupRef": "fuelTypes", "visible": true, "editable": true, "required": false, "order": 4 }
+            ]
+          },
+          {
+            "id": "STEP_RATING_LOCATION",
+            "key": "rating_location",
+            "title": "Location",
+            "order": 2,
+            "controls": [
+              { "id": "postal-code", "key": "address.postalCode", "label": "Postal Code", "type": "text", "visible": true, "editable": true, "required": true, "order": 1 },
+              { "id": "rating-state", "key": "address.state", "label": "State", "type": "select", "lookupRef": "states", "visible": true, "editable": true, "required": true, "order": 2 }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "WF_DRIVER",
+        "key": "driver",
+        "title": "Driver",
+        "order": 2,
+        "steps": [
+          {
+            "id": "STEP_DRIVER_PRIMARY",
+            "key": "driver_primary",
+            "title": "Primary Driver",
+            "order": 1,
+            "controls": [
+              { "id": "driver-first", "key": "driver.firstName", "label": "First Name", "type": "text", "visible": true, "editable": true, "required": true, "order": 1 },
+              { "id": "driver-last", "key": "driver.lastName", "label": "Last Name", "type": "text", "visible": true, "editable": true, "required": true, "order": 2 },
+              { "id": "driver-dob", "key": "driver.dob", "label": "Date of Birth", "type": "date", "visible": true, "editable": true, "required": true, "order": 3 },
+              { "id": "driver-license-status", "key": "driver.licenseStatus", "label": "License Status", "type": "select", "lookupRef": "licenseStatuses", "visible": true, "editable": true, "required": true, "order": 4 },
+              { "id": "driver-marital", "key": "driver.maritalStatus", "label": "Marital Status", "type": "select", "lookupRef": "maritalStatuses", "visible": true, "editable": true, "required": false, "order": 5 }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "WF_COVERAGE",
+        "key": "coverage",
+        "title": "Coverage",
+        "order": 3,
+        "steps": [
+          {
+            "id": "STEP_COVERAGE_SELECT",
+            "key": "coverage_select",
+            "title": "Select Coverages",
+            "order": 1,
+            "controls": [
+              { "id": "coverage-types", "key": "coverage.types", "label": "Coverage Types", "type": "multiselect", "lookupRef": "coverageTypes", "visible": true, "editable": true, "required": true, "order": 1 },
+              { "id": "coverage-deductible", "key": "coverage.deductible", "label": "Deductible", "type": "select", "lookupRef": "deductibles", "visible": true, "editable": true, "required": true, "order": 2 }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "WF_DISCOUNTS",
+        "key": "discounts",
+        "title": "Discounts",
+        "order": 4,
+        "steps": [
+          {
+            "id": "STEP_DISCOUNTS",
+            "key": "discount_flags",
+            "title": "Discount Flags",
+            "order": 1,
+            "controls": [
+              { "id": "discount-student", "key": "discounts.student", "label": "Student Discount", "type": "checkbox", "visible": true, "editable": true, "required": false, "order": 1 },
+              { "id": "discount-multi", "key": "discounts.multiPolicy", "label": "Multi-policy Discount", "type": "checkbox", "visible": true, "editable": true, "required": false, "order": 2 }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "WF_PAYMENT",
+        "key": "payment",
+        "title": "Payment",
+        "order": 5,
+        "steps": [
+          {
+            "id": "STEP_PAYMENT",
+            "key": "payment_details",
+            "title": "Payment Details",
+            "order": 1,
+            "controls": [
+              { "id": "payment-plan", "key": "payment.plan", "label": "Payment Plan", "type": "select", "lookupRef": "paymentPlans", "visible": true, "editable": true, "required": true, "order": 1 },
+              { "id": "payment-card-type", "key": "payment.cardType", "label": "Card Type", "type": "select", "lookupRef": "cardTypes", "visible": true, "editable": true, "required": true, "order": 2 },
+              { "id": "payment-card-number", "key": "payment.cardNumber", "label": "Card Number", "type": "text", "visible": true, "editable": true, "required": true, "order": 3 }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "WF_REVIEW",
+        "key": "review",
+        "title": "Review",
+        "order": 6,
+        "steps": [
+          {
+            "id": "STEP_REVIEW",
+            "key": "review_summary",
+            "title": "Summary",
+            "order": 1,
+            "controls": [
+              { "id": "summary-display", "key": "review.summary", "label": "Summary", "type": "display", "visible": true, "editable": false, "required": false, "order": 1 },
+              { "id": "accept-terms", "key": "consent.acceptTerms", "label": "Accept Terms", "type": "checkbox", "visible": true, "editable": true, "required": true, "order": 2 }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "WF_ISSUE",
+        "key": "issue",
+        "title": "Issue",
+        "order": 7,
+        "steps": [
+          {
+            "id": "STEP_ISSUE",
+            "key": "issue_policy",
+            "title": "Issue Policy",
+            "order": 1,
+            "controls": [
+              { "id": "policy-number", "key": "policy.number", "label": "Policy Number", "type": "display", "visible": true, "editable": false, "required": false, "order": 1 }
+            ]
+          }
+        ]
+      }
+    ],
+    "navigation": {
+      "workflowOrder": ["WF_QUOTE","WF_DRIVER","WF_COVERAGE","WF_DISCOUNTS","WF_PAYMENT","WF_REVIEW","WF_ISSUE"],
+      "workflowTransitions": {
+        "WF_QUOTE": ["WF_DRIVER"],
+        "WF_DRIVER": ["WF_COVERAGE"],
+        "WF_COVERAGE": ["WF_DISCOUNTS"],
+        "WF_DISCOUNTS": ["WF_PAYMENT"],
+        "WF_PAYMENT": ["WF_REVIEW"],
+        "WF_REVIEW": ["WF_ISSUE"],
+        "WF_ISSUE": []
+      },
+      "stepTransitions": {
+        "STEP_VEHICLE": ["STEP_RATING_LOCATION"],
+        "STEP_RATING_LOCATION": [],
+        "STEP_DRIVER_PRIMARY": [],
+        "STEP_COVERAGE_SELECT": [],
+        "STEP_DISCOUNTS": [],
+        "STEP_PAYMENT": [],
+        "STEP_REVIEW": [],
+        "STEP_ISSUE": []
+      },
+      "backtrack": { "allowed": true },
+      "jump": {
+        "enabled": true,
+        "allowedWorkflows": ["WF_QUOTE","WF_DRIVER","WF_COVERAGE","WF_DISCOUNTS","WF_PAYMENT","WF_REVIEW"],
+        "allowedSteps": ["STEP_VEHICLE","STEP_RATING_LOCATION","STEP_DRIVER_PRIMARY","STEP_COVERAGE_SELECT","STEP_DISCOUNTS","STEP_PAYMENT","STEP_REVIEW"]
+      }
+    }
+  },
+  "state": {
+    "current": { "workflowId": "WF_QUOTE", "stepId": "STEP_VEHICLE" },
+    "completedSteps": [],
+    "visitedWorkflows": ["WF_QUOTE"],
+    "formData": {},
+    "messages": []
+  },
+  "ui": {
+    "stepper": {
+      "showProgress": true,
+      "displayWorkflowTitles": true,
+      "workflowBadges": true
+    }
+  }
+}

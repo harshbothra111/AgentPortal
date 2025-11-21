@@ -15,11 +15,11 @@ interface DemoStep {
 })
 export class Demo {
   private readonly allSteps: DemoStep[] = [
-    { title: 'Quote', description: 'Initial product and vehicle basics.', icon: 'fa-regular fa-tags' },
-    { title: 'Driver', description: 'Driver information & history.', icon: 'fa-regular fa-user' },
-    { title: 'Coverage', description: 'Select coverages & deductible.', icon: 'fa-regular fa-shield' },
-    { title: 'Payment', description: 'Provide payment details.', icon: 'fa-regular fa-credit-card' },
-    { title: 'Review', description: 'Confirm & submit application.', icon: 'fa-regular fa-check-circle' }
+    { title: 'Quote', description: 'Initial product and vehicle basics.', icon: 'fa-solid fa-tags' },
+    { title: 'Driver', description: 'Driver information & history.', icon: 'fa-solid fa-user' },
+    { title: 'Coverage', description: 'Select coverages & deductible.', icon: 'fa-solid fa-shield' },
+    { title: 'Payment', description: 'Provide payment details.', icon: 'fa-solid fa-credit-card' },
+    { title: 'Review', description: 'Confirm & submit application.', icon: 'fa-solid fa-check-circle' }
   ];
 
   stepIndex = signal(0);

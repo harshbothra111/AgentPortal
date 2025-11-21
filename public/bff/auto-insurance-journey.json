@@ -81,7 +81,7 @@
         "key": "quote",
         "title": "Get a Quote",
         "description": "Collect minimal info to generate an initial quote/eligibility",
-        "ui": { "icon": "fa-regular fa-tags", "estimatedMinutes": 3, "progressWeight": 5 },
+        "ui": { "icon": "fa-solid fa-tags", "estimatedMinutes": 3, "progressWeight": 5 },
         "steps": [
           {
             "id": "WF_QUOTE_STEP_BASIC",
@@ -102,7 +102,7 @@
         "key": "driver_details",
         "title": "Driver Details",
         "description": "Driver information and driving history",
-        "ui": { "icon": "fa-regular fa-user", "progressWeight": 15 },
+        "ui": { "icon": "fa-solid fa-user", "progressWeight": 15 },
         "steps": [
           {
             "id": "WF_DRIVER_STEP",
@@ -124,7 +124,7 @@
         "key": "coverage_selection",
         "title": "Coverage Selection",
         "description": "Choose coverages and deductibles",
-        "ui": { "icon": "fa-regular fa-shield", "progressWeight": 25 },
+        "ui": { "icon": "fa-solid fa-shield", "progressWeight": 25 },
         "steps": [
           {
             "id": "WF_COVERAGE_STEP",
@@ -143,7 +143,7 @@
         "key": "discounts",
         "title": "Discounts & Surcharges",
         "description": "Apply eligibility discounts and any surcharges",
-        "ui": { "icon": "fa-regular fa-percent", "progressWeight": 10 },
+        "ui": { "icon": "fa-solid fa-percent", "progressWeight": 10 },
         "steps": [
           {
             "id": "WF_YOUNG_DRIVER_SURCHARGE",
@@ -171,7 +171,7 @@
         "key": "payment",
         "title": "Payment",
         "description": "Payment and billing details",
-        "ui": { "icon": "fa-regular fa-credit-card", "progressWeight": 15 },
+        "ui": { "icon": "fa-solid fa-credit-card", "progressWeight": 15 },
         "steps": [
           {
             "id": "WF_PAYMENT_STEP",
@@ -191,7 +191,7 @@
         "key": "inspection",
         "title": "Vehicle Inspection",
         "description": "On-site or remote inspection required for legacy/high-risk vehicles",
-        "ui": { "icon": "fa-regular fa-tools", "progressWeight": 8 },
+        "ui": { "icon": "fa-solid fa-tools", "progressWeight": 8 },
         "steps": [
           {
             "id": "WF_INSPECTION_STEP",
@@ -214,7 +214,7 @@
         "key": "review",
         "title": "Review & Submit",
         "description": "Customer reviews selections and pricing and submits application",
-        "ui": { "icon": "fa-regular fa-check-circle", "progressWeight": 10 },
+        "ui": { "icon": "fa-solid fa-check-circle", "progressWeight": 10 },
         "steps": [
           {
             "id": "WF_REVIEW_STEP",
@@ -233,7 +233,7 @@
         "key": "issue",
         "title": "Issue Policy",
         "description": "Final issuance and policy docs",
-        "ui": { "icon": "fa-regular fa-user-shield", "progressWeight": 12 },
+        "ui": { "icon": "fa-solid fa-user-shield", "progressWeight": 12 },
         "steps": [
           {
             "id": "WF_ISSUE_STEP",
