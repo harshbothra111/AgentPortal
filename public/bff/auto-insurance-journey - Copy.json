@@ -1,0 +1,533 @@
+{
+  "bffResponse": {
+    "meta": {
+      "responseVersion": "1.0.0",
+      "schemaVersion": "enterprise-insurance-v1",
+      "timestamp": "2025-11-21T12:00:00Z",
+      "correlationId": "c9a8f3d2-4b2a-4f6f-9f1e-0a1b2c3d4e5f",
+      "locale": "en-US",
+      "currency": "USD",
+      "environment": "staging"
+    },
+    "product": {
+      "productCode": "AUTO_4W",
+      "productName": "Auto Insurance - 4 Wheeler",
+      "effectiveDate": "2025-12-01",
+      "insurer": {
+        "name": "Acme Insurance Co",
+        "code": "ACME"
+      },
+      "channels": ["web", "mobile", "agentPortal"]
+    },
+    "lookups": {
+      "vehicleMakes": [
+        { "id": "HON", "label": "Honda" },
+        { "id": "TOY", "label": "Toyota" },
+        { "id": "FOR", "label": "Ford" },
+        { "id": "TES", "label": "Tesla" }
+      ],
+      "vehicleModelsByMake": {
+        "HON": [
+          { "id": "CIV", "label": "Civic" },
+          { "id": "ACC", "label": "Accord" }
+        ],
+        "TOY": [
+          { "id": "COR", "label": "Corolla" },
+          { "id": "CAM", "label": "Camry" }
+        ],
+        "TES": [
+          { "id": "MS3", "label": "Model 3" }
+        ]
+      },
+      "vehicleYears": [
+        2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2015, 2010, 2005, 2000, 1995
+      ],
+      "states": [
+        { "id": "CA", "label": "California" },
+        { "id": "TX", "label": "Texas" },
+        { "id": "NY", "label": "New York" }
+      ],
+      "maritalStatus": [
+        { "id": "S", "label": "Single" },
+        { "id": "M", "label": "Married" }
+      ],
+      "licenseStatuses": [
+        { "id": "VALID", "label": "Valid" },
+        { "id": "SUSP", "label": "Suspended" }
+      ],
+      "coverageTypes": [
+        { "id": "LIAB", "label": "Liability" },
+        { "id": "COMP", "label": "Comprehensive" },
+        { "id": "COLL", "label": "Collision" }
+      ],
+      "deductibleOptions": [
+        { "id": 500, "label": "$500" },
+        { "id": 1000, "label": "$1,000" },
+        { "id": 1500, "label": "$1,500" }
+      ],
+      "paymentPlans": [
+        { "id": "ANNUAL", "label": "Annual" },
+        { "id": "SEMI", "label": "Semi-Annual" },
+        { "id": "MONTHLY", "label": "Monthly" }
+      ],
+      "cardTypes": [
+        { "id": "VISA", "label": "Visa" },
+        { "id": "MC", "label": "Mastercard" }
+      ]
+    },
+    "workflows": [
+      {
+        "id": "WF_QUOTE",
+        "key": "quote",
+        "title": "Get a Quote",
+        "description": "Collect minimal info to generate an initial quote/eligibility",
+        "ui": { "icon": "local_offer", "estimatedMinutes": 3, "progressWeight": 5 },
+        "steps": [
+          {
+            "id": "WF_QUOTE_STEP_BASIC",
+            "key": "quote_basic",
+            "title": "Basic Info",
+            "description": "Vehicle & basic owner data to start quote",
+            "ui": { "stepperTitle": "Basic", "canJumpTo": true, "order": 1 },
+            "controls": [
+              {
+                "id": "vehicle-type",
+                "key": "vehicle.type",
+                "type": "select",
+                "label": "Vehicle Make",
+                "placeholder": "Select make",
+                "required": true,
+                "lookupRef": "vehicleMakes",
+                "binding": "formData.vehicle.make"
+              },
+              {
+                "id": "vehicle-model",
+                "key": "vehicle.model",
+                "type": "select",
+                "label": "Model",
+                "placeholder": "Select model",
+                "required": true,
+                "lookupRef": "vehicleModelsByMake",
+                "dependentOn": "formData.vehicle.make",
+                "binding": "formData.vehicle.model"
+              },
+              {
+                "id": "vehicle-year",
+                "key": "vehicle.year",
+                "type": "select",
+                "label": "Year",
+                "required": true,
+                "lookupRef": "vehicleYears",
+                "binding": "formData.vehicle.year"
+              }
+            ],
+            "validationRules": [
+              { "type": "required", "fields": ["formData.vehicle.make", "formData.vehicle.model", "formData.vehicle.year"] }
+            ],
+            "navigationRules": [
+              {
+                "priority": 10,
+                "condition": "formData.vehicle.year < 2000",
+                "action": "goto",
+                "targetStepId": "WF_INSPECTION_STEP",
+                "description": "Legacy vehicles require inspection"
+              },
+              {
+                "priority": 5,
+                "condition": "true",
+                "action": "goto",
+                "targetStepId": "WF_DRIVER_STEP",
+                "description": "Default next step"
+              }
+            ],
+            "permissions": { "roles": ["customer", "agent"], "editableBy": ["customer", "agent"] }
+          }
+        ]
+      },
+      {
+        "id": "WF_DRIVER",
+        "key": "driver_details",
+        "title": "Driver Details",
+        "description": "Driver information and driving history",
+        "ui": { "icon": "person", "progressWeight": 15 },
+        "steps": [
+          {
+            "id": "WF_DRIVER_STEP",
+            "key": "driver_primary",
+            "title": "Primary Driver",
+            "ui": { "stepperTitle": "Driver", "order": 2, "canJumpTo": false },
+            "controls": [
+              {
+                "id": "driver-firstname",
+                "key": "driver.firstName",
+                "type": "text",
+                "label": "First Name",
+                "required": true,
+                "binding": "formData.driver.firstName"
+              },
+              {
+                "id": "driver-lastname",
+                "key": "driver.lastName",
+                "type": "text",
+                "label": "Last Name",
+                "required": true,
+                "binding": "formData.driver.lastName"
+              },
+              {
+                "id": "driver-dob",
+                "key": "driver.dob",
+                "type": "date",
+                "label": "Date of Birth",
+                "required": true,
+                "binding": "formData.driver.dob"
+              },
+              {
+                "id": "driver-license-years",
+                "key": "driver.licenseYears",
+                "type": "number",
+                "label": "Years Licensed",
+                "required": true,
+                "min": 0,
+                "binding": "formData.driver.licenseYears"
+              },
+              {
+                "id": "driver-accidents",
+                "key": "driver.accidents",
+                "type": "radio",
+                "label": "Any at-fault accidents in last 5 years?",
+                "options": [
+                  { "id": "YES", "label": "Yes" },
+                  { "id": "NO", "label": "No" }
+                ],
+                "binding": "formData.driver.hasAtFaultClaims"
+              }
+            ],
+            "validationRules": [
+              { "type": "required", "fields": ["formData.driver.firstName", "formData.driver.lastName", "formData.driver.dob"] },
+              { "type": "expression", "expression": "formData.driver.licenseYears >= 0", "message": "Invalid license years" }
+            ],
+            "navigationRules": [
+              {
+                "priority": 20,
+                "condition": "formData.driver.age < 25",
+                "action": "goto",
+                "targetStepId": "WF_YOUNG_DRIVER_SURCHARGE",
+                "description": "Young driver surcharge step"
+              },
+              {
+                "priority": 5,
+                "condition": "true",
+                "action": "goto",
+                "targetStepId": "WF_COVERAGE_STEP",
+                "description": "Proceed to coverage selection"
+              }
+            ],
+            "permissions": { "roles": ["customer", "agent"], "editableBy": ["customer", "agent"] }
+          }
+        ]
+      },
+      {
+        "id": "WF_COVERAGE",
+        "key": "coverage_selection",
+        "title": "Coverage Selection",
+        "description": "Choose coverages and deductibles",
+        "ui": { "icon": "shield", "progressWeight": 25 },
+        "steps": [
+          {
+            "id": "WF_COVERAGE_STEP",
+            "key": "coverage",
+            "title": "Coverage",
+            "ui": { "stepperTitle": "Coverage", "order": 3, "canJumpTo": false },
+            "controls": [
+              {
+                "id": "coverage-types",
+                "key": "coverage.types",
+                "type": "checkboxGroup",
+                "label": "Coverage Types",
+                "required": true,
+                "lookupRef": "coverageTypes",
+                "binding": "formData.coverage.types"
+              },
+              {
+                "id": "coverage-deductible",
+                "key": "coverage.deductible",
+                "type": "select",
+                "label": "Deductible",
+                "lookupRef": "deductibleOptions",
+                "binding": "formData.coverage.deductible"
+              }
+            ],
+            "validationRules": [{ "type": "required", "fields": ["formData.coverage.types"] }],
+            "navigationRules": [
+              {
+                "priority": 5,
+                "condition": "true",
+                "action": "goto",
+                "targetStepId": "WF_DISCOUNTS_STEP"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "WF_DISCOUNTS",
+        "key": "discounts",
+        "title": "Discounts & Surcharges",
+        "description": "Apply eligibility discounts and any surcharges",
+        "ui": { "icon": "percent", "progressWeight": 10 },
+        "steps": [
+          {
+            "id": "WF_YOUNG_DRIVER_SURCHARGE",
+            "key": "young_driver",
+            "title": "Young Driver Surcharge",
+            "ui": { "stepperTitle": "Surcharge", "order": 4, "canJumpTo": false },
+            "controls": [
+              {
+                "id": "young-driver-surcharge-ack",
+                "key": "discounts.youngDriverAcknowledged",
+                "type": "checkbox",
+                "label": "Acknowledge young driver surcharge",
+                "required": true,
+                "binding": "formData.discounts.youngDriverAcknowledged"
+              }
+            ],
+            "navigationRules": [
+              { "priority": 5, "condition": "true", "action": "goto", "targetStepId": "WF_PAYMENT_STEP" }
+            ]
+          },
+          {
+            "id": "WF_DISCOUNTS_STEP",
+            "key": "discounts_general",
+            "title": "Discounts",
+            "ui": { "stepperTitle": "Discounts", "order": 4.1, "canJumpTo": true },
+            "controls": [
+              { "id": "has-student", "key": "discounts.student", "type": "checkbox", "label": "Student Discount", "binding": "formData.discounts.student" },
+              { "id": "has-multi", "key": "discounts.multiPolicy", "type": "checkbox", "label": "Multi-policy Discount", "binding": "formData.discounts.multiPolicy" }
+            ],
+            "navigationRules": [
+              { "priority": 5, "condition": "true", "action": "goto", "targetStepId": "WF_PAYMENT_STEP" }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "WF_PAYMENT",
+        "key": "payment",
+        "title": "Payment",
+        "description": "Payment and billing details",
+        "ui": { "icon": "payment", "progressWeight": 15 },
+        "steps": [
+          {
+            "id": "WF_PAYMENT_STEP",
+            "key": "payment_info",
+            "title": "Payment",
+            "ui": { "stepperTitle": "Payment", "order": 5, "canJumpTo": false },
+            "controls": [
+              {
+                "id": "payment-plan",
+                "key": "payment.plan",
+                "type": "select",
+                "label": "Payment Plan",
+                "lookupRef": "paymentPlans",
+                "required": true,
+                "binding": "formData.payment.plan"
+              },
+              {
+                "id": "card-type",
+                "key": "payment.cardType",
+                "type": "select",
+                "label": "Card Type",
+                "lookupRef": "cardTypes",
+                "binding": "formData.payment.cardType"
+              },
+              {
+                "id": "card-number",
+                "key": "payment.cardNumber",
+                "type": "maskedText",
+                "label": "Card Number",
+                "required": true,
+                "binding": "formData.payment.cardNumber",
+                "validationRules": [{ "type": "regex", "pattern": "^[0-9]{13,19}$", "message": "Enter a valid card number" }]
+              }
+            ],
+            "navigationRules": [
+              { "priority": 5, "condition": "true", "action": "goto", "targetStepId": "WF_REVIEW_STEP" }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "WF_INSPECTION",
+        "key": "inspection",
+        "title": "Vehicle Inspection",
+        "description": "On-site or remote inspection required for legacy/high-risk vehicles",
+        "ui": { "icon": "engineering", "progressWeight": 8 },
+        "steps": [
+          {
+            "id": "WF_INSPECTION_STEP",
+            "key": "inspection_required",
+            "title": "Inspection Required",
+            "ui": { "stepperTitle": "Inspection", "order": 2.5, "canJumpTo": false },
+            "controls": [
+              {
+                "id": "inspection-choice",
+                "key": "inspection.type",
+                "type": "radio",
+                "label": "Inspection Type",
+                "options": [
+                  { "id": "REMOTE", "label": "Remote (photos)" },
+                  { "id": "ONSITE", "label": "On-site" }
+                ],
+                "binding": "formData.inspection.type"
+              }
+            ],
+            "navigationRules": [
+              { "priority": 5, "condition": "true", "action": "goto", "targetStepId": "WF_DRIVER_STEP" }
+            ],
+            "attachments": [
+              { "id": "vehicle-photos", "key": "attachments.vehiclePhotos", "label": "Upload vehicle photos", "required": true, "maxFiles": 10 }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "WF_REVIEW",
+        "key": "review",
+        "title": "Review & Submit",
+        "description": "Customer reviews selections and pricing and submits application",
+        "ui": { "icon": "check_circle", "progressWeight": 10 },
+        "steps": [
+          {
+            "id": "WF_REVIEW_STEP",
+            "key": "review",
+            "title": "Review",
+            "ui": { "stepperTitle": "Review", "order": 6 },
+            "controls": [
+              { "id": "review-summary", "key": "review.summary", "type": "display", "label": "Summary", "binding": "formData.review.summary" },
+              { "id": "accept-terms", "key": "consent.acceptTerms", "type": "checkbox", "label": "I accept terms and conditions", "required": true, "binding": "formData.consent.acceptTerms" }
+            ],
+            "navigationRules": [
+              { "priority": 10, "condition": "formData.consent.acceptTerms == true", "action": "goto", "targetStepId": "WF_ISSUE_STEP" },
+              { "priority": 1, "condition": "formData.consent.acceptTerms != true", "action": "stay", "targetStepId": "WF_REVIEW_STEP", "message": "Accept terms is required" }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "WF_ISSUE",
+        "key": "issue",
+        "title": "Issue Policy",
+        "description": "Final issuance and policy docs",
+        "ui": { "icon": "verified_user", "progressWeight": 12 },
+        "steps": [
+          {
+            "id": "WF_ISSUE_STEP",
+            "key": "issue_policy",
+            "title": "Issue Policy",
+            "ui": { "stepperTitle": "Issue", "order": 7 },
+            "controls": [
+              { "id": "policy-number", "key": "policy.number", "type": "display", "label": "Policy Number", "binding": "formData.policy.number" },
+              { "id": "issue-docs", "key": "policy.documents", "type": "displayList", "label": "Policy Documents", "binding": "formData.policy.documents" }
+            ],
+            "navigationRules": [
+              { "priority": 1, "condition": "true", "action": "end", "description": "Journey complete" }
+            ],
+            "permissions": { "roles": ["agent", "system"], "editableBy": ["system"] }
+          }
+        ]
+      }
+    ],
+    "session": {
+      "sessionId": "sess-7f3c9b",
+      "user": { "userId": "user-123", "role": "customer", "locale": "en-US" },
+      "currentWorkflowId": "WF_DRIVER",
+      "currentStepId": "WF_DRIVER_STEP",
+      "history": [
+        { "workflowId": "WF_QUOTE", "stepId": "WF_QUOTE_STEP", "completedAt": "2025-11-21T11:55:00Z" }
+      ],
+      "formData": {
+        "vehicle": {
+          "make": "HON",
+          "model": "CIV",
+          "year": 2018,
+          "vin": "1HGCM82633A004352",
+          "mileage": 30000
+        },
+        "driver": {
+          "firstName": "Jane",
+          "lastName": "Doe",
+          "dob": "1995-06-12",
+          "age": 30,
+          "licenseYears": 12,
+          "hasAtFaultClaims": false
+        },
+        "coverage": {
+          "types": ["LIAB", "COMP"],
+          "deductible": 1000
+        },
+        "discounts": {
+          "student": false,
+          "multiPolicy": false,
+          "youngDriverAcknowledged": false
+        },
+        "payment": {
+          "plan": "ANNUAL",
+          "cardType": "VISA",
+          "cardNumber": "4111111111111111"
+        },
+        "inspection": {},
+        "consent": { "acceptTerms": false },
+        "policy": {}
+      },
+      "evaluationContext": {
+        "quoteId": "Q-20251121-0001",
+        "prelimPremium": 750.0,
+        "riskFactors": {
+          "vehicleAge": 7,
+          "driverAge": 30,
+          "driverClaims": 0,
+          "vehicleIsElectric": false
+        }
+      },
+      "computed": {
+        "nextStepCandidate": "WF_COVERAGE_STEP",
+        "requiresInspection": false,
+        "requiresYoungDriverSurcharge": false
+      },
+      "messages": []
+    },
+    "attachments": [
+      {
+        "id": "id-verification",
+        "label": "Government ID",
+        "required": true,
+        "acceptedTypes": ["image/jpeg", "image/png", "application/pdf"],
+        "maxSizeMB": 10
+      }
+    ],
+    "documents": [
+      { "id": "DOC_TOS", "label": "Terms & Conditions", "mimeType": "application/pdf", "url": "/public/docs/terms.pdf" }
+    ],
+    "uiHints": {
+      "stepper": {
+        "groupByWorkflow": true,
+        "showProgressBar": true,
+        "displayOrder": ["WF_QUOTE", "WF_DRIVER", "WF_INSPECTION", "WF_COVERAGE", "WF_DISCOUNTS", "WF_PAYMENT", "WF_REVIEW", "WF_ISSUE"]
+      },
+      "fieldRendering": {
+        "defaultControlToComponent": {
+          "text": "TextInput",
+          "maskedText": "MaskedInput",
+          "number": "NumberInput",
+          "select": "Select",
+          "radio": "RadioGroup",
+          "checkbox": "Checkbox",
+          "checkboxGroup": "CheckboxGroup",
+          "date": "DatePicker",
+          "display": "ReadOnlyText",
+          "displayList": "ReadOnlyList"
+        }
+      }
+    }
+  }
+}

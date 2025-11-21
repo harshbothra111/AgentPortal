@@ -1,0 +1,267 @@
+{
+  "bffResponse": {
+    "meta": {
+      "responseVersion": "1.0.0",
+      "schemaVersion": "enterprise-insurance-v1",
+      "timestamp": "2025-11-21T12:00:00Z",
+      "correlationId": "c9a8f3d2-4b2a-4f6f-9f1e-0a1b2c3d4e5f",
+      "locale": "en-US",
+      "currency": "USD",
+      "environment": "staging"
+    },
+    "product": {
+      "productCode": "AUTO_4W",
+      "productName": "Auto Insurance - 4 Wheeler",
+      "effectiveDate": "2025-12-01",
+      "insurer": {
+        "name": "Acme Insurance Co",
+        "code": "ACME"
+      },
+      "channels": ["web", "mobile", "agentPortal"]
+    },
+    "lookups": {
+      "vehicleMakes": [
+        { "id": "HON", "label": "Honda" },
+        { "id": "TOY", "label": "Toyota" },
+        { "id": "FOR", "label": "Ford" },
+        { "id": "TES", "label": "Tesla" }
+      ],
+      "vehicleModelsByMake": {
+        "HON": [
+          { "id": "CIV", "label": "Civic" },
+          { "id": "ACC", "label": "Accord" }
+        ],
+        "TOY": [
+          { "id": "COR", "label": "Corolla" },
+          { "id": "CAM", "label": "Camry" }
+        ],
+        "TES": [
+          { "id": "MS3", "label": "Model 3" }
+        ]
+      },
+      "vehicleYears": [
+        2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2015, 2010, 2005, 2000, 1995
+      ],
+      "states": [
+        { "id": "CA", "label": "California" },
+        { "id": "TX", "label": "Texas" },
+        { "id": "NY", "label": "New York" }
+      ],
+      "maritalStatus": [
+        { "id": "S", "label": "Single" },
+        { "id": "M", "label": "Married" }
+      ],
+      "licenseStatuses": [
+        { "id": "VALID", "label": "Valid" },
+        { "id": "SUSP", "label": "Suspended" }
+      ],
+      "coverageTypes": [
+        { "id": "LIAB", "label": "Liability" },
+        { "id": "COMP", "label": "Comprehensive" },
+        { "id": "COLL", "label": "Collision" }
+      ],
+      "deductibleOptions": [
+        { "id": 500, "label": "$500" },
+        { "id": 1000, "label": "$1,000" },
+        { "id": 1500, "label": "$1,500" }
+      ],
+      "paymentPlans": [
+        { "id": "ANNUAL", "label": "Annual" },
+        { "id": "SEMI", "label": "Semi-Annual" },
+        { "id": "MONTHLY", "label": "Monthly" }
+      ],
+      "cardTypes": [
+        { "id": "VISA", "label": "Visa" },
+        { "id": "MC", "label": "Mastercard" }
+      ]
+    },
+    "workflows": [
+      {
+        "id": "WF_QUOTE",
+        "key": "quote",
+        "title": "Get a Quote",
+        "description": "Collect minimal info to generate an initial quote/eligibility",
+        "ui": { "icon": "fa-regular fa-tags", "estimatedMinutes": 3, "progressWeight": 5 },
+        "steps": [
+          {
+            "id": "WF_QUOTE_STEP_BASIC",
+            "key": "quote_basic",
+            "title": "Basic Info",
+            "description": "Vehicle & basic owner data to start quote",
+            "ui": { "stepperTitle": "Basic", "canJumpTo": true, "order": 1 },
+            "controls": [
+              { "id": "vehicle-make", "key": "vehicle.make", "label": "Vehicle Make", "visible": true, "editable": true, "required": true, "order": 1 },
+              { "id": "vehicle-model", "key": "vehicle.model", "label": "Model", "visible": "formData.vehicle.make != null", "editable": true, "required": true, "order": 2 },
+              { "id": "vehicle-year", "key": "vehicle.year", "label": "Year", "visible": true, "editable": true, "required": true, "order": 3 }
+            ]            
+          }
+        ]
+      },
+      {
+        "id": "WF_DRIVER",
+        "key": "driver_details",
+        "title": "Driver Details",
+        "description": "Driver information and driving history",
+        "ui": { "icon": "fa-regular fa-user", "progressWeight": 15 },
+        "steps": [
+          {
+            "id": "WF_DRIVER_STEP",
+            "key": "driver_primary",
+            "title": "Primary Driver",
+            "ui": { "stepperTitle": "Driver", "order": 2, "canJumpTo": false },
+            "controls": [
+              { "id": "driver-firstname", "key": "driver.firstName", "label": "First Name", "visible": true, "editable": true, "required": true, "order": 1 },
+              { "id": "driver-lastname", "key": "driver.lastName", "label": "Last Name", "visible": true, "editable": true, "required": true, "order": 2 },
+              { "id": "driver-dob", "key": "driver.dob", "label": "Date of Birth", "visible": true, "editable": true, "required": true, "order": 3 },
+              { "id": "driver-license-years", "key": "driver.licenseYears", "label": "Years Licensed", "visible": true, "editable": true, "required": false, "order": 4 },
+              { "id": "driver-accidents", "key": "driver.hasAtFaultClaims", "label": "At-fault accidents (5y)", "visible": true, "editable": true, "required": false, "order": 5 }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "WF_COVERAGE",
+        "key": "coverage_selection",
+        "title": "Coverage Selection",
+        "description": "Choose coverages and deductibles",
+        "ui": { "icon": "fa-regular fa-shield", "progressWeight": 25 },
+        "steps": [
+          {
+            "id": "WF_COVERAGE_STEP",
+            "key": "coverage",
+            "title": "Coverage",
+            "ui": { "stepperTitle": "Coverage", "order": 3, "canJumpTo": false },
+            "controls": [
+              { "id": "coverage-types", "key": "coverage.types", "label": "Coverage Types", "visible": true, "editable": true, "required": true, "order": 1 },
+              { "id": "coverage-deductible", "key": "coverage.deductible", "label": "Deductible", "visible": true, "editable": true, "required": false, "order": 2 }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "WF_DISCOUNTS",
+        "key": "discounts",
+        "title": "Discounts & Surcharges",
+        "description": "Apply eligibility discounts and any surcharges",
+        "ui": { "icon": "fa-regular fa-percent", "progressWeight": 10 },
+        "steps": [
+          {
+            "id": "WF_YOUNG_DRIVER_SURCHARGE",
+            "key": "young_driver",
+            "title": "Young Driver Surcharge",
+            "ui": { "stepperTitle": "Surcharge", "order": 4, "canJumpTo": false },
+            "controls": [
+              { "id": "young-driver-surcharge-ack", "key": "discounts.youngDriverAcknowledged", "label": "Acknowledge surcharge", "visible": true, "editable": true, "required": true, "order": 1 }
+            ]
+          },
+          {
+            "id": "WF_DISCOUNTS_STEP",
+            "key": "discounts_general",
+            "title": "Discounts",
+            "ui": { "stepperTitle": "Discounts", "order": 4.1, "canJumpTo": true },
+            "controls": [
+              { "id": "has-student", "key": "discounts.student", "label": "Student Discount", "visible": true, "editable": true, "required": false, "order": 1 },
+              { "id": "has-multi", "key": "discounts.multiPolicy", "label": "Multi-policy Discount", "visible": true, "editable": true, "required": false, "order": 2 }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "WF_PAYMENT",
+        "key": "payment",
+        "title": "Payment",
+        "description": "Payment and billing details",
+        "ui": { "icon": "fa-regular fa-credit-card", "progressWeight": 15 },
+        "steps": [
+          {
+            "id": "WF_PAYMENT_STEP",
+            "key": "payment_info",
+            "title": "Payment",
+            "ui": { "stepperTitle": "Payment", "order": 5, "canJumpTo": false },
+            "controls": [
+              { "id": "payment-plan", "key": "payment.plan", "label": "Payment Plan", "visible": true, "editable": true, "required": true, "order": 1 },
+              { "id": "card-type", "key": "payment.cardType", "label": "Card Type", "visible": true, "editable": true, "required": false, "order": 2 },
+              { "id": "card-number", "key": "payment.cardNumber", "label": "Card Number", "visible": true, "editable": true, "required": true, "order": 3 }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "WF_INSPECTION",
+        "key": "inspection",
+        "title": "Vehicle Inspection",
+        "description": "On-site or remote inspection required for legacy/high-risk vehicles",
+        "ui": { "icon": "fa-regular fa-tools", "progressWeight": 8 },
+        "steps": [
+          {
+            "id": "WF_INSPECTION_STEP",
+            "key": "inspection_required",
+            "title": "Inspection Required",
+            "ui": { "stepperTitle": "Inspection", "order": 2.5, "canJumpTo": false },
+            "controls": [
+              { "id": "inspection-choice", "key": "inspection.type", "label": "Inspection Type", "visible": true, "editable": true, "required": true, "order": 1 }
+            ],
+
+            
+            "attachments": [
+              { "id": "vehicle-photos", "key": "attachments.vehiclePhotos", "label": "Upload vehicle photos", "required": true, "maxFiles": 10 }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "WF_REVIEW",
+        "key": "review",
+        "title": "Review & Submit",
+        "description": "Customer reviews selections and pricing and submits application",
+        "ui": { "icon": "fa-regular fa-check-circle", "progressWeight": 10 },
+        "steps": [
+          {
+            "id": "WF_REVIEW_STEP",
+            "key": "review",
+            "title": "Review",
+            "ui": { "stepperTitle": "Review", "order": 6 },
+            "controls": [
+              { "id": "review-summary", "key": "review.summary", "label": "Summary", "visible": true, "editable": false, "required": false, "order": 1 },
+              { "id": "accept-terms", "key": "consent.acceptTerms", "label": "I accept terms and conditions", "visible": true, "editable": true, "required": true, "order": 2 }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "WF_ISSUE",
+        "key": "issue",
+        "title": "Issue Policy",
+        "description": "Final issuance and policy docs",
+        "ui": { "icon": "fa-regular fa-user-shield", "progressWeight": 12 },
+        "steps": [
+          {
+            "id": "WF_ISSUE_STEP",
+            "key": "issue_policy",
+            "title": "Issue Policy",
+            "ui": { "stepperTitle": "Issue", "order": 7 },
+            "controls": [
+              { "id": "policy-number", "key": "policy.number", "label": "Policy Number", "visible": true, "editable": false, "required": false, "order": 1 },
+              { "id": "issue-docs", "key": "policy.documents", "label": "Policy Documents", "visible": true, "editable": false, "required": false, "order": 2 }
+            ]
+          }
+        ]
+      }
+    ],
+    "session": {
+      "sessionId": "sess-7f3c9b",
+      "user": { "userId": "user-123", "role": "customer", "locale": "en-US" },
+      "currentWorkflowId": "WF_QUOTE",
+      "currentStepId": "WF_QUOTE_STEP_BASIC",
+      "previousWorkflowId": null,
+      "previousStepId": null,
+      "formData": null,
+      "messages": []
+    },
+    "uiHints": {
+      "stepper": {
+        "displayOrder": ["WF_QUOTE", "WF_DRIVER", "WF_INSPECTION", "WF_COVERAGE", "WF_DISCOUNTS", "WF_PAYMENT", "WF_REVIEW", "WF_ISSUE"]
+      }
+    }
+  }
+}
