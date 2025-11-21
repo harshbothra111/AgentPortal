@@ -1,0 +1,240 @@
+{
+  "meta": {
+    "transactionId": "tx_7890_abc_123",
+    "timestamp": "2023-10-27T10:30:00Z",
+    "apiVersion": "1.0.0"
+  },
+  "product": {
+    "productId": "PROD_AUTO_001",
+    "productName": "Private Car Comprehensive Policy",
+    "lineOfBusiness": "MOTOR",
+    "subType": "FOUR_WHEELER"
+  },
+  "journeyContext": {
+    "journeyId": "JRN_55667788",
+    "currentWorkflowId": "wf_vehicle_details",
+    "currentStepId": "step_vehicle_identification",
+    "journeyStatus": "IN_PROGRESS",
+    "lastUpdated": "2023-10-27T10:25:00Z"
+  },
+  "navigation": {
+    "nextStepId": "step_vehicle_usage",
+    "previousStepId": null,
+    "canGoBack": false,
+    "canGoNext": true,
+    "exitUrl": "/dashboard"
+  },
+  "workflows": [
+    {
+      "workflowId": "wf_vehicle_details",
+      "label": "Vehicle Details",
+      "status": "IN_PROGRESS",
+      "order": 1,
+      "steps": [
+        {
+          "stepId": "step_vehicle_identification",
+          "label": "Vehicle Identification",
+          "status": "IN_PROGRESS",
+          "order": 1,
+          "metadata": {
+            "isEditable": true,
+            "isVisible": true,
+            "description": "Enter your vehicle's basic information."
+          },
+          "fields": [
+            {
+              "key": "registrationNumber",
+              "id": "fld_reg_no",
+              "type": "text",
+              "visible": true,
+              "editable": true,
+              "required": true,
+              "order": 1
+            },
+            {
+              "key": "make",
+              "id": "fld_make",
+              "type": "select",
+              "visible": true,
+              "editable": true,
+              "required": true,
+              "order": 2
+            },
+            {
+              "key": "model",
+              "id": "fld_model",
+              "type": "select",
+              "visible": true,
+              "editable": true,
+              "required": true,
+              "order": 3
+            },
+            {
+              "key": "variant",
+              "id": "fld_variant",
+              "type": "select",
+              "visible": true,
+              "editable": true,
+              "required": true,
+              "order": 4
+            },
+            {
+              "key": "registrationYear",
+              "id": "fld_reg_year",
+              "type": "select",
+              "visible": true,
+              "editable": true,
+              "required": true,
+              "order": 5
+            }
+          ],
+          "lookups": {
+            "make": [
+              { "code": "TOY", "label": "Toyota" },
+              { "code": "HON", "label": "Honda" },
+              { "code": "FOR", "label": "Ford" },
+              { "code": "BMW", "label": "BMW" }
+            ],
+            "model": [], 
+            "variant": [],
+            "registrationYear": [
+              { "code": "2024", "label": "2024" },
+              { "code": "2023", "label": "2023" },
+              { "code": "2022", "label": "2022" },
+              { "code": "2021", "label": "2021" }
+            ]
+          }
+        },
+        {
+          "stepId": "step_vehicle_usage",
+          "label": "Usage & History",
+          "status": "PENDING",
+          "order": 2,
+          "metadata": {
+            "isEditable": false,
+            "isVisible": true,
+            "description": "Tell us how you use your car."
+          },
+          "fields": [
+            {
+              "key": "primaryUse",
+              "id": "fld_primary_use",
+              "type": "radio",
+              "visible": true,
+              "editable": true,
+              "required": true
+            },
+            {
+              "key": "annualMileage",
+              "id": "fld_mileage",
+              "type": "number",
+              "visible": true,
+              "editable": true,
+              "required": true
+            },
+            {
+              "key": "isFinanced",
+              "id": "fld_financed",
+              "type": "toggle",
+              "visible": true,
+              "editable": true,
+              "required": false
+            }
+          ],
+          "lookups": {
+            "primaryUse": [
+              { "code": "COMMUTE", "label": "Commuting to Work/School" },
+              { "code": "PLEASURE", "label": "Pleasure Use Only" },
+              { "code": "BUSINESS", "label": "Business Use" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "workflowId": "wf_driver_details",
+      "label": "Driver Details",
+      "status": "PENDING",
+      "order": 2,
+      "steps": [
+        {
+          "stepId": "step_primary_driver",
+          "label": "Primary Driver",
+          "status": "PENDING",
+          "order": 1,
+          "metadata": {
+            "isEditable": false,
+            "isVisible": true
+          },
+          "fields": [
+            { "key": "firstName", "id": "fld_first_name", "visible": true, "editable": true },
+            { "key": "lastName", "id": "fld_last_name", "visible": true, "editable": true },
+            { "key": "dob", "id": "fld_dob", "visible": true, "editable": true },
+            { "key": "licenseNumber", "id": "fld_license", "visible": true, "editable": true }
+          ],
+          "lookups": {}
+        },
+        {
+          "stepId": "step_additional_drivers",
+          "label": "Additional Drivers",
+          "status": "PENDING",
+          "order": 2,
+          "metadata": {
+            "isEditable": false,
+            "isVisible": true
+          },
+          "fields": [],
+          "lookups": {}
+        }
+      ]
+    },
+    {
+      "workflowId": "wf_coverage_selection",
+      "label": "Coverage",
+      "status": "PENDING",
+      "order": 3,
+      "steps": [
+        {
+          "stepId": "step_plans",
+          "label": "Select Plan",
+          "status": "PENDING",
+          "order": 1,
+          "metadata": {
+            "isEditable": false,
+            "isVisible": true
+          },
+          "fields": [
+            { "key": "planType", "id": "fld_plan_type", "visible": true, "editable": true }
+          ],
+          "lookups": {
+            "planType": [
+              { "code": "LIABILITY", "label": "Liability Only" },
+              { "code": "COMPREHENSIVE", "label": "Comprehensive" },
+              { "code": "PREMIUM", "label": "Premium Plus" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "workflowId": "wf_review_pay",
+      "label": "Review & Pay",
+      "status": "PENDING",
+      "order": 4,
+      "steps": [
+        {
+          "stepId": "step_summary",
+          "label": "Summary",
+          "status": "PENDING",
+          "order": 1,
+          "metadata": {
+            "isEditable": false,
+            "isVisible": true
+          },
+          "fields": [],
+          "lookups": {}
+        }
+      ]
+    }
+  ]
+}
