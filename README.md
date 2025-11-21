@@ -12,6 +12,18 @@ ng serve
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
+## Mock Backend Server
+
+This application relies on a mock backend server to drive the journey configuration and state.
+
+To start the mock server, run:
+
+```bash
+npm run server
+```
+
+The server runs on `http://localhost:3000` and serves the API endpoints for the journey. You must have this running alongside the Angular development server.
+
 ## Code scaffolding
 
 Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
