@@ -24,7 +24,7 @@ export class SummaryComponent implements OnInit {
   plan = computed(() => this.answers()['step_select_plan']);
 
   ngOnInit() {
-    this.journeyService.updateStep('wf_review', 'step_summary');
+    this.journeyService.updateStep('wf_review_pay', 'step_summary');
   }
 
   onBack() {

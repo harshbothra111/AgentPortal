@@ -4,8 +4,8 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { Router } from '@angular/router';
 import { JourneyService } from '../../../../core/services/journey.service';
 import { MockValidationService } from '../../../../core/services/mock-validation.service';
-import { TextInputComponent } from '../../../../common/components/text-input/text-input.component';
-import { SelectInputComponent } from '../../../../common/components/select-input/select-input.component';
+import { TextInputComponent } from '../../../../core/components/form-controls/text-input/text-input.component';
+import { SelectInputComponent } from '../../../../core/components/form-controls/select-input/select-input.component';
 import { LookupOption } from '../../../../core/models/journey.model';
 
 @Component({

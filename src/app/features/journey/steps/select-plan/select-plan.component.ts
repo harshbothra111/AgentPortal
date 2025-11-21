@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { JourneyService } from '../../../../core/services/journey.service';
-import { RadioInputComponent } from '../../../../common/components/radio-input/radio-input.component';
+import { RadioInputComponent } from '../../../../core/components/form-controls/radio-input/radio-input.component';
 import { LookupOption } from '../../../../core/models/journey.model';
 
 @Component({

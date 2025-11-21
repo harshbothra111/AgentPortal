@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { JourneyService } from '../../../../core/services/journey.service';
-import { TextInputComponent } from '../../../../common/components/text-input/text-input.component';
+import { TextInputComponent } from '../../../../core/components/form-controls/text-input/text-input.component';
 
 @Component({
   selector: 'app-additional-drivers',

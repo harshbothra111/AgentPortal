@@ -1,16 +1,16 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { LookupOption } from '../../../core/models/journey.model';
+import { LookupOption } from '../../../models/journey.model';
 
 @Component({
-  selector: 'app-select-input',
+  selector: 'app-radio-input',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './select-input.component.html',
-  styleUrl: './select-input.component.scss'
+  templateUrl: './radio-input.component.html',
+  styleUrl: './radio-input.component.scss'
 })
-export class SelectInputComponent {
+export class RadioInputComponent {
   @Input({ required: true }) control!: FormControl;
   @Input({ required: true }) label!: string;
   @Input({ required: true }) id!: string;
