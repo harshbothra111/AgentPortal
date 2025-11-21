@@ -67,6 +67,7 @@ export interface FieldMetadata {
   editable: boolean;
   required?: boolean;
   order?: number;
+  onChange?: 'refresh' | 'validate' | 'none';
 }
 
 export interface LookupOption {

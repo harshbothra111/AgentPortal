@@ -1,0 +1,31 @@
+@if (journeyService.journey(); as journey) {
+  <div class="container mt-4">
+    <!-- Progress Bar -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <div class="d-flex justify-content-between mb-1">
+           <span class="fw-bold text-primary">{{ journeyService.currentWorkflow()?.label }}</span>
+           <span class="text-muted small">{{ journeyService.progress() }}% Complete</span>
+        </div>
+        <div class="progress" style="height: 10px;">
+          <div class="progress-bar bg-primary" 
+               role="progressbar" 
+               [style.width.%]="journeyService.progress()" 
+               [attr.aria-valuenow]="journeyService.progress()" 
+               aria-valuemin="0" 
+               aria-valuemax="100">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="alert alert-info m-4">Initializing journey...</div>
+}

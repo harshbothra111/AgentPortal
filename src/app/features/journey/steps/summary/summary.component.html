@@ -1,0 +1,91 @@
+<div class="card shadow-sm border-0">
+  <div class="card-header bg-white border-bottom-0 pt-4 px-4">
+    <h3 class="card-title text-primary mb-1">Review & Submit</h3>
+    <p class="text-muted mb-0">Please review your information before submitting.</p>
+  </div>
+  
+  <div class="card-body px-4">
+    
+    <!-- Vehicle Information -->
+    <div class="mb-4">
+      <h5 class="border-bottom pb-2 mb-3">Vehicle Information</h5>
+      @if (vehicleInfo()) {
+        <div class="row">
+          <div class="col-md-6 mb-2"><strong>Year:</strong> {{ vehicleInfo().year }}</div>
+          <div class="col-md-6 mb-2"><strong>Make:</strong> {{ vehicleInfo().make }}</div>
+          <div class="col-md-6 mb-2"><strong>Model:</strong> {{ vehicleInfo().model }}</div>
+        </div>
+      } @else {
+        <p class="text-muted fst-italic">No vehicle information provided.</p>
+      }
+    </div>
+
+    <!-- Vehicle Usage -->
+    <div class="mb-4">
+      <h5 class="border-bottom pb-2 mb-3">Vehicle Usage</h5>
+      @if (vehicleUsage()) {
+        <div class="row">
+          <div class="col-md-6 mb-2"><strong>Primary Use:</strong> {{ vehicleUsage().primaryUse }}</div>
+          <div class="col-md-6 mb-2"><strong>Annual Mileage:</strong> {{ vehicleUsage().annualMileage }}</div>
+        </div>
+      } @else {
+        <p class="text-muted fst-italic">No usage information provided.</p>
+      }
+    </div>
+
+    <!-- Primary Driver -->
+    <div class="mb-4">
+      <h5 class="border-bottom pb-2 mb-3">Primary Driver</h5>
+      @if (primaryDriver()) {
+        <div class="row">
+          <div class="col-md-6 mb-2"><strong>Name:</strong> {{ primaryDriver().firstName }} {{ primaryDriver().lastName }}</div>
+          <div class="col-md-6 mb-2"><strong>DOB:</strong> {{ primaryDriver().dob }}</div>
+          <div class="col-md-6 mb-2"><strong>License:</strong> {{ primaryDriver().licenseNumber }}</div>
+        </div>
+      } @else {
+        <p class="text-muted fst-italic">No primary driver information provided.</p>
+      }
+    </div>
+
+    <!-- Additional Drivers -->
+    <div class="mb-4">
+      <h5 class="border-bottom pb-2 mb-3">Additional Drivers</h5>
+      @if (additionalDrivers() && additionalDrivers().drivers && additionalDrivers().drivers.length > 0) {
+        @for (driver of additionalDrivers().drivers; track $index) {
+          <div class="mb-3 p-3 bg-light rounded">
+            <h6 class="mb-2">Driver {{ $index + 1 }}</h6>
+            <div class="row">
+              <div class="col-md-6 mb-1"><strong>Name:</strong> {{ driver.firstName }} {{ driver.lastName }}</div>
+              <div class="col-md-6 mb-1"><strong>DOB:</strong> {{ driver.dob }}</div>
+              <div class="col-md-6 mb-1"><strong>License:</strong> {{ driver.licenseNumber }}</div>
+            </div>
+          </div>
+        }
+      } @else {
+        <p class="text-muted fst-italic">No additional drivers.</p>
+      }
+    </div>
+
+    <!-- Selected Plan -->
+    <div class="mb-4">
+      <h5 class="border-bottom pb-2 mb-3">Selected Plan</h5>
+      @if (plan()) {
+        <div class="row">
+          <div class="col-md-12 mb-2"><strong>Plan:</strong> {{ plan().plan | titlecase }}</div>
+        </div>
+      } @else {
+        <p class="text-muted fst-italic">No plan selected.</p>
+      }
+    </div>
+
+    <div class="d-flex justify-content-between mt-4">
+      <button type="button" class="btn btn-outline-secondary px-4" (click)="onBack()">
+        <i class="fa-solid fa-arrow-left me-2"></i> Back
+      </button>
+      
+      <button type="button" class="btn btn-success px-4" (click)="onSubmit()">
+        Submit Application <i class="fa-solid fa-check ms-2"></i>
+      </button>
+    </div>
+  </div>
+</div>

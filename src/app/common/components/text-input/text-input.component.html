@@ -1,0 +1,31 @@
+<div class="mb-3">
+  <label [attr.for]="id" class="form-label">
+    {{ label }}
+    @if (control.hasValidator(null!) || control.errors?.['required']) { <span class="text-danger">*</span> }
+  </label>
+  <input 
+    [type]="type" 
+    [formControl]="control" 
+    [id]="id" 
+    [placeholder]="placeholder"
+    class="form-control"
+    [class.is-invalid]="control.invalid && (control.dirty || control.touched)"
+  >
+  
+  @if (control.invalid && (control.dirty || control.touched)) {
+    <div class="invalid-feedback">
+      @if (control.hasError('required')) {
+        {{ label }} is required.
+      }
+      @if (control.hasError('uniqueRegistration')) {
+        Registration number is already taken.
+      }
+      @if (control.hasError('email')) {
+        Please enter a valid email.
+      }
+    </div>
+  }
+  @if (control.pending) {
+    <div class="text-info small mt-1">Checking...</div>
+  }
+</div>

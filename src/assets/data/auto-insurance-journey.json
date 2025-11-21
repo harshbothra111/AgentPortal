@@ -58,7 +58,8 @@
               "visible": true,
               "editable": true,
               "required": true,
-              "order": 2
+              "order": 2,
+              "onChange": "refresh"
             },
             {
               "key": "model",
@@ -95,7 +96,20 @@
               { "code": "FOR", "label": "Ford" },
               { "code": "BMW", "label": "BMW" }
             ],
-            "model": [], 
+            "model": [
+              { "code": "COR", "label": "Corolla", "make": "TOY" },
+              { "code": "CAM", "label": "Camry", "make": "TOY" },
+              { "code": "RAV", "label": "RAV4", "make": "TOY" },
+              { "code": "CIV", "label": "Civic", "make": "HON" },
+              { "code": "ACC", "label": "Accord", "make": "HON" },
+              { "code": "CRV", "label": "CR-V", "make": "HON" },
+              { "code": "F15", "label": "F-150", "make": "FOR" },
+              { "code": "MUS", "label": "Mustang", "make": "FOR" },
+              { "code": "EXP", "label": "Explorer", "make": "FOR" },
+              { "code": "3SER", "label": "3 Series", "make": "BMW" },
+              { "code": "5SER", "label": "5 Series", "make": "BMW" },
+              { "code": "X5", "label": "X5", "make": "BMW" }
+            ], 
             "variant": [],
             "registrationYear": [
               { "code": "2024", "label": "2024" },
