@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ts-node server/server.ts",
+    "start": "node dist/server/server.js",
     "start:dev": "ng serve",
-    "build": "ng build",
+    "build": "ng build && tsc -p tsconfig.server.json",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "server": "ts-node server/server.ts"

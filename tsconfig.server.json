@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "outDir": "./dist/server",
+    "types": ["node", "express"]
+  },
+  "include": [
+    "server/**/*.ts"
+  ]
+}
