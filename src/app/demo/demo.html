@@ -1,0 +1,77 @@
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="card-title mb-0">
+        <i [class]="current().icon + ' me-2 text-primary'" aria-hidden="true"></i>
+        {{ current().title }}
+      </h5>
+      <span class="badge bg-secondary">Step {{ stepIndex() + 1 }} / {{ steps().length }}</span>
+    </div>
+    <p class="text-muted small mb-4">{{ current().description }}</p>
+
+    <div class="progress mb-4" style="height: 6px;">
+      <div class="progress-bar" role="progressbar" [style.width]="progressPct() + '%'" aria-label="Progress"></div>
+    </div>
+
+    <div class="btn-toolbar mb-4" role="toolbar">
+      <div class="btn-group me-2" role="group">
+        <button class="btn btn-outline-secondary" (click)="prev()" [disabled]="isFirst()">
+          <i class="fa-regular fa-arrow-left me-1"></i> Back
+        </button>
+        <button class="btn btn-outline-primary" (click)="next()" [disabled]="isLast()">
+          Next <i class="fa-regular fa-arrow-right ms-1"></i>
+        </button>
+      </div>
+    </div>
+
+    <ul class="list-group list-group-horizontal overflow-auto step-strip mb-2">
+      @for (s of steps(); track s.title; let i = $index) {
+        <li class="list-group-item step-item" [class.active]="i === stepIndex()" (click)="goTo(i)">
+          <i [class]="s.icon + ' me-1'" aria-hidden="true"></i>
+          <span class="d-none d-md-inline">{{ s.title }}</span>
+        </li>
+      }
+    </ul>
+    <div class="small text-muted">Click a step to jump.</div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card border-primary h-100">
+      <div class="card-header bg-primary text-white">
+        <i class="fa-regular fa-circle-info me-1"></i> Bootstrap Utilities
+      </div>
+      <div class="card-body">
+        <p class="mb-2">Quick examples of utility classes:</p>
+        <div class="d-flex flex-wrap gap-2">
+          <span class="badge bg-primary">primary</span>
+          <span class="badge bg-secondary">secondary</span>
+          <span class="badge bg-success">success</span>
+          <span class="badge bg-danger">danger</span>
+          <span class="badge bg-warning text-dark">warning</span>
+          <span class="badge bg-info text-dark">info</span>
+          <span class="badge bg-light text-dark">light</span>
+          <span class="badge bg-dark">dark</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header bg-light">
+        <i class="fa-regular fa-icons me-1"></i> Font Awesome Icons
+      </div>
+      <div class="card-body">
+        <div class="icon-grid">
+          <div><i class="fa-regular fa-user"></i><span>User</span></div>
+          <div><i class="fa-regular fa-tags"></i><span>Tags</span></div>
+          <div><i class="fa-regular fa-shield"></i><span>Shield</span></div>
+          <div><i class="fa-regular fa-credit-card"></i><span>Card</span></div>
+          <div><i class="fa-regular fa-check-circle"></i><span>Check</span></div>
+          <div><i class="fa-regular fa-circle-info"></i><span>Info</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

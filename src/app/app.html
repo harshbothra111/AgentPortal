@@ -1,1 +1,17 @@
-<router-outlet />
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-3 shadow-sm">
+	<div class="container-fluid">
+		<a class="navbar-brand" routerLink="/">
+			<i class="fa-regular fa-user-shield me-2"></i>{{ title() }}
+		</a>
+		<div class="d-flex gap-2 ms-auto">
+			<a class="btn btn-outline-primary" routerLink="/demo">
+				<i class="fa-regular fa-tags me-1"></i> Demo
+			</a>
+			<a class="btn btn-outline-secondary" href="https://getbootstrap.com/" target="_blank" rel="noopener">Bootstrap</a>
+			<a class="btn btn-outline-secondary" href="https://fontawesome.com/" target="_blank" rel="noopener">Font Awesome</a>
+		</div>
+	</div>
+</nav>
+<div class="container mb-4">
+	<router-outlet />
+</div>
