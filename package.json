@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ts-node server/server.ts",
+    "start:dev": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
@@ -39,7 +40,9 @@
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.9.2"
   },
   "devDependencies": {
     "@angular/build": "^20.3.3",
@@ -53,8 +56,6 @@
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.1.0",
-    "ts-node": "^10.9.2",
-    "typescript": "~5.9.2"
+    "karma-jasmine-html-reporter": "~2.1.0"
   }
 }

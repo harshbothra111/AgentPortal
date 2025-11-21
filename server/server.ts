@@ -5,10 +5,14 @@ import fs from 'fs';
 import path from 'path';
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
+
+// Serve static files from Angular build
+const distPath = path.join(process.cwd(), 'dist/AgentPortal/browser');
+app.use(express.static(distPath));
 
 // Load initial data
 const dataPath = path.join(process.cwd(), 'src/assets/data/auto-insurance-journey.json');
@@ -166,6 +170,15 @@ app.post('/api/journey/back', (req, res) => {
 
     const response = createResponseView();
     setTimeout(() => res.json(response), 500);
+});
+
+// Fallback to Angular index.html for non-API routes
+app.get('*', (req, res) => {
+    if (req.path.startsWith('/api')) {
+        res.status(404).json({ error: 'API endpoint not found' });
+        return;
+    }
+    res.sendFile(path.join(distPath, 'index.html'));
 });
 
 app.listen(port, () => {
