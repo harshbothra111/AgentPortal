@@ -5,7 +5,7 @@ import fs from 'fs';
 import path from 'path';
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env['PORT'] || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -173,7 +173,7 @@ app.post('/api/journey/back', (req, res) => {
 });
 
 // Fallback to Angular index.html for non-API routes
-app.get('*', (req, res) => {
+app.get(/.*/, (req, res) => {
     if (req.path.startsWith('/api')) {
         res.status(404).json({ error: 'API endpoint not found' });
         return;
