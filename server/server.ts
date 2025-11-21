@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import fs from 'fs';
@@ -78,7 +78,7 @@ function createResponseView(): any {
 }
 
 // Routes
-app.get('/api/journey/:productId', (req, res) => {
+app.get('/api/journey/:productId', (req: Request, res: Response) => {
     if (!journeyState) {
         res.status(500).json({ error: 'Journey data not loaded' });
         return;
@@ -98,7 +98,7 @@ app.get('/api/journey/:productId', (req, res) => {
     setTimeout(() => res.json(response), 500); // Simulate delay
 });
 
-app.post('/api/journey/submit', (req, res) => {
+app.post('/api/journey/submit', (req: Request, res: Response) => {
     const { lastJourneyResponse, userInput } = req.body;
 
     if (!journeyState) {
@@ -144,7 +144,7 @@ app.post('/api/journey/submit', (req, res) => {
     setTimeout(() => res.json(response), 500);
 });
 
-app.post('/api/journey/back', (req, res) => {
+app.post('/api/journey/back', (req: Request, res: Response) => {
     if (!journeyState) {
         res.status(500).json({ error: 'Journey data not loaded' });
         return;
@@ -173,7 +173,7 @@ app.post('/api/journey/back', (req, res) => {
 });
 
 // Fallback to Angular index.html for non-API routes
-app.get(/.*/, (req, res) => {
+app.get(/.*/, (req: Request, res: Response) => {
     if (req.path.startsWith('/api')) {
         res.status(404).json({ error: 'API endpoint not found' });
         return;

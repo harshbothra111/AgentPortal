@@ -3,7 +3,10 @@
   "compilerOptions": {
     "module": "commonjs",
     "outDir": "./dist/server",
-    "types": ["node", "express"]
+    "types": ["node", "express"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noImplicitAny": false
   },
   "include": [
     "server/**/*.ts"
