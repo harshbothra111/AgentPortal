@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
-import { JourneyService } from '../../core/services/journey.service';
+import { JourneyService } from '../../services/journey.service';
 
 @Component({
   selector: 'app-journey',
@@ -15,7 +15,12 @@ export class JourneyComponent implements OnInit {
   private route = inject(ActivatedRoute);
 
   ngOnInit() {
-    const productId = this.route.snapshot.paramMap.get('productId');
+    let productId = this.route.snapshot.paramMap.get('productId');
+    
+    if (!productId) {
+      productId = this.route.snapshot.data['productId'];
+    }
+
     if (productId) {
       this.journeyService.getJourney(productId).subscribe();
     }
