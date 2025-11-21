@@ -21,14 +21,22 @@ export class SummaryComponent implements OnInit {
   vehicleUsage = computed(() => this.answers()['step_vehicle_usage']);
   primaryDriver = computed(() => this.answers()['step_primary_driver']);
   additionalDrivers = computed(() => this.answers()['step_additional_drivers']);
-  plan = computed(() => this.answers()['step_select_plan']);
+  plan = computed(() => this.answers()['step_plans']);
 
   ngOnInit() {
-    this.journeyService.updateStep('wf_review_pay', 'step_summary');
   }
 
   onBack() {
-    this.router.navigate(['journey', 'auto', 'select-plan']);
+    this.journeyService.navigateBack().subscribe({
+      next: (response) => {
+        const nextStepId = response.journeyContext.currentStepId;
+        const currentWorkflow = response.workflows.find(w => w.workflowId === response.journeyContext.currentWorkflowId);
+        const nextStep = currentWorkflow?.steps?.find(s => s.stepId === nextStepId);
+        if (nextStep && nextStep.route) {
+           this.router.navigate(['journey', 'auto', nextStep.route]);
+        }
+      }
+    });
   }
 
   onSubmit() {

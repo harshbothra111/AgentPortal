@@ -25,21 +25,27 @@ export class AdditionalDriversComponent implements OnInit {
 
   ngOnInit() {
     this.initForm();
-    this.journeyService.updateStep('wf_driver_details', 'step_additional_drivers');
   }
 
   private initForm() {
     this.form = this.fb.group({
       drivers: this.fb.array([])
     });
+
+    const step = this.journeyService.currentStep();
+    if (step && step.data && step.data.drivers && Array.isArray(step.data.drivers)) {
+      step.data.drivers.forEach((driver: any) => {
+        this.addDriver(driver);
+      });
+    }
   }
 
-  addDriver() {
+  addDriver(driverData?: any) {
     const driverForm = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      dob: ['', Validators.required],
-      licenseNumber: ['', Validators.required]
+      firstName: [driverData?.firstName || '', Validators.required],
+      lastName: [driverData?.lastName || '', Validators.required],
+      dob: [driverData?.dob || '', Validators.required],
+      licenseNumber: [driverData?.licenseNumber || '', Validators.required]
     });
     this.drivers.push(driverForm);
   }
@@ -49,13 +55,30 @@ export class AdditionalDriversComponent implements OnInit {
   }
 
   onBack() {
-    this.router.navigate(['journey', 'auto', 'primary-driver']);
+    this.journeyService.navigateBack().subscribe({
+      next: (response) => {
+        const nextStepId = response.journeyContext.currentStepId;
+        const currentWorkflow = response.workflows.find(w => w.workflowId === response.journeyContext.currentWorkflowId);
+        const nextStep = currentWorkflow?.steps?.find(s => s.stepId === nextStepId);
+        if (nextStep && nextStep.route) {
+           this.router.navigate(['journey', 'auto', nextStep.route]);
+        }
+      }
+    });
   }
 
   onSubmit() {
     if (this.form.valid) {
-      this.journeyService.updateAnswers('step_additional_drivers', this.form.value);
-      this.router.navigate(['journey', 'auto', 'select-plan']);
+      this.journeyService.submitCurrentStep(this.form.value).subscribe({
+        next: (response) => {
+          const nextStepId = response.journeyContext.currentStepId;
+          const currentWorkflow = response.workflows.find(w => w.workflowId === response.journeyContext.currentWorkflowId);
+          const nextStep = currentWorkflow?.steps?.find(s => s.stepId === nextStepId);
+          if (nextStep && nextStep.route) {
+             this.router.navigate(['journey', 'auto', nextStep.route]);
+          }
+        }
+      });
     } else {
       this.form.markAllAsTouched();
     }

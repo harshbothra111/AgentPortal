@@ -31,11 +31,9 @@ export class VehicleIdentificationComponent implements OnInit {
   private allModels: LookupOption[] = [];
 
   ngOnInit() {
-    this.initForm();
     this.loadLookups();
-    
-    // Update progress
-    this.journeyService.updateStep('wf_vehicle_details', 'step_vehicle_identification');
+    this.initForm();
+    this.patchData();
   }
 
   private initForm() {
@@ -53,12 +51,36 @@ export class VehicleIdentificationComponent implements OnInit {
     });
   }
 
-  private loadLookups() {
+  private patchData() {
+    // Patch values if available from server
     const step = this.journeyService.currentStep();
-    if (step && step.lookups) {
-      this.makeOptions = step.lookups['make'] || [];
-      this.yearOptions = step.lookups['registrationYear'] || [];
-      this.allModels = step.lookups['model'] || [];
+    if (step && step.fields) {
+      const values: any = {};
+      step.fields.forEach(field => {
+        if (field.value !== undefined && field.value !== null) {
+          values[field.key] = field.value;
+        }
+      });
+      if (Object.keys(values).length > 0) {
+        this.form.patchValue(values);
+        // Trigger change detection logic manually if needed (e.g. make change)
+        if (values['make']) {
+           this.onMakeChange(values['make']);
+           // Re-patch model since onMakeChange might reset it
+           if (values['model']) {
+             this.form.get('model')?.setValue(values['model']);
+           }
+        }
+      }
+    }
+  }
+
+  private loadLookups() {
+    const workflow = this.journeyService.currentWorkflow();
+    if (workflow && workflow.lookups) {
+      this.makeOptions = workflow.lookups['make'] || [];
+      this.yearOptions = workflow.lookups['registrationYear'] || [];
+      this.allModels = workflow.lookups['model'] || [];
     }
   }
 
@@ -81,8 +103,16 @@ export class VehicleIdentificationComponent implements OnInit {
 
   onSubmit() {
     if (this.form.valid) {
-      this.journeyService.updateAnswers('step_vehicle_identification', this.form.value);
-      this.router.navigate(['journey', 'auto', 'vehicle-usage']);
+      this.journeyService.submitCurrentStep(this.form.value).subscribe({
+        next: (response) => {
+          const nextStepId = response.journeyContext.currentStepId;
+          const currentWorkflow = response.workflows.find(w => w.workflowId === response.journeyContext.currentWorkflowId);
+          const nextStep = currentWorkflow?.steps?.find(s => s.stepId === nextStepId);
+          if (nextStep && nextStep.route) {
+             this.router.navigate(['journey', 'auto', nextStep.route]);
+          }
+        }
+      });
     } else {
       this.form.markAllAsTouched();
     }

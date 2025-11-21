@@ -21,7 +21,6 @@ export class PrimaryDriverComponent implements OnInit {
 
   ngOnInit() {
     this.initForm();
-    this.journeyService.updateStep('wf_driver_details', 'step_primary_driver');
   }
 
   private initForm() {
@@ -31,16 +30,47 @@ export class PrimaryDriverComponent implements OnInit {
       dob: ['', Validators.required],
       licenseNumber: ['', Validators.required]
     });
+
+    // Patch values
+    const step = this.journeyService.currentStep();
+    if (step && step.fields) {
+      const values: any = {};
+      step.fields.forEach(field => {
+        if (field.value !== undefined && field.value !== null) {
+          values[field.key] = field.value;
+        }
+      });
+      if (Object.keys(values).length > 0) {
+        this.form.patchValue(values);
+      }
+    }
   }
 
   onBack() {
-    this.router.navigate(['journey', 'auto', 'vehicle-usage']);
+    this.journeyService.navigateBack().subscribe({
+      next: (response) => {
+        const nextStepId = response.journeyContext.currentStepId;
+        const currentWorkflow = response.workflows.find(w => w.workflowId === response.journeyContext.currentWorkflowId);
+        const nextStep = currentWorkflow?.steps?.find(s => s.stepId === nextStepId);
+        if (nextStep && nextStep.route) {
+           this.router.navigate(['journey', 'auto', nextStep.route]);
+        }
+      }
+    });
   }
 
   onSubmit() {
     if (this.form.valid) {
-      this.journeyService.updateAnswers('step_primary_driver', this.form.value);
-      this.router.navigate(['journey', 'auto', 'additional-drivers']);
+      this.journeyService.submitCurrentStep(this.form.value).subscribe({
+        next: (response) => {
+          const nextStepId = response.journeyContext.currentStepId;
+          const currentWorkflow = response.workflows.find(w => w.workflowId === response.journeyContext.currentWorkflowId);
+          const nextStep = currentWorkflow?.steps?.find(s => s.stepId === nextStepId);
+          if (nextStep && nextStep.route) {
+             this.router.navigate(['journey', 'auto', nextStep.route]);
+          }
+        }
+      });
     } else {
       this.form.markAllAsTouched();
     }

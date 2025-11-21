@@ -4,6 +4,12 @@ export interface JourneyResponse {
   journeyContext: JourneyContext;
   navigation: NavigationControl;
   workflows: Workflow[];
+  extraData?: any; // Generic container for additional display data
+}
+
+export interface JourneySubmitRequest {
+  lastJourneyResponse: JourneyResponse;
+  userInput: any;
 }
 
 export interface MetaData {
@@ -28,7 +34,6 @@ export interface JourneyContext {
 }
 
 export interface NavigationControl {
-  nextStepId: string | null;
   previousStepId: string | null;
   canGoBack: boolean;
   canGoNext: boolean;
@@ -40,17 +45,19 @@ export interface Workflow {
   label: string;
   status: 'IN_PROGRESS' | 'COMPLETED' | 'PENDING' | 'LOCKED';
   order: number;
-  steps: WorkflowStep[];
+  lookups?: { [key: string]: LookupOption[] }; // Moved from Step to Workflow
+  steps?: WorkflowStep[] | null; // Optional, only present if active or needed
 }
 
 export interface WorkflowStep {
   stepId: string;
   label: string;
+  route: string; // Added for UI navigation
   status: 'IN_PROGRESS' | 'COMPLETED' | 'PENDING' | 'LOCKED';
   order: number;
   metadata: StepMetadata;
-  fields: FieldMetadata[];
-  lookups: { [key: string]: LookupOption[] };
+  fields?: FieldMetadata[]; // Optional, only present if active
+  data?: any; // Container for complex step data (e.g. arrays, nested objects)
 }
 
 export interface StepMetadata {
@@ -68,6 +75,7 @@ export interface FieldMetadata {
   required?: boolean;
   order?: number;
   onChange?: 'refresh' | 'validate' | 'none';
+  value?: any; // Value for binding
 }
 
 export interface LookupOption {

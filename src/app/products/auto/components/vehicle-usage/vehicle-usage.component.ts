@@ -24,15 +24,15 @@ export class VehicleUsageComponent implements OnInit {
   usageOptions: LookupOption[] = [];
 
   ngOnInit() {
-    this.initForm();
-    this.journeyService.updateStep('wf_vehicle_details', 'step_vehicle_usage');
     this.loadLookups();
+    this.initForm();
+    this.patchData();
   }
 
   private loadLookups() {
-    const step = this.journeyService.currentStep();
-    if (step && step.lookups) {
-      this.usageOptions = step.lookups['primaryUse'] || [];
+    const workflow = this.journeyService.currentWorkflow();
+    if (workflow && workflow.lookups) {
+      this.usageOptions = workflow.lookups['primaryUse'] || [];
     }
   }
 
@@ -44,14 +44,47 @@ export class VehicleUsageComponent implements OnInit {
     });
   }
 
+  private patchData() {
+    // Patch values
+    const step = this.journeyService.currentStep();
+    if (step && step.fields) {
+      const values: any = {};
+      step.fields.forEach(field => {
+        if (field.value !== undefined && field.value !== null) {
+          values[field.key] = field.value;
+        }
+      });
+      if (Object.keys(values).length > 0) {
+        this.form.patchValue(values);
+      }
+    }
+  }
+
   onBack() {
-    this.router.navigate(['journey', 'auto', 'vehicle-identification']);
+    this.journeyService.navigateBack().subscribe({
+      next: (response) => {
+        const nextStepId = response.journeyContext.currentStepId;
+        const currentWorkflow = response.workflows.find(w => w.workflowId === response.journeyContext.currentWorkflowId);
+        const nextStep = currentWorkflow?.steps?.find(s => s.stepId === nextStepId);
+        if (nextStep && nextStep.route) {
+           this.router.navigate(['journey', 'auto', nextStep.route]);
+        }
+      }
+    });
   }
 
   onSubmit() {
     if (this.form.valid) {
-      this.journeyService.updateAnswers('step_vehicle_usage', this.form.value);
-      this.router.navigate(['journey', 'auto', 'primary-driver']);
+      this.journeyService.submitCurrentStep(this.form.value).subscribe({
+        next: (response) => {
+          const nextStepId = response.journeyContext.currentStepId;
+          const currentWorkflow = response.workflows.find(w => w.workflowId === response.journeyContext.currentWorkflowId);
+          const nextStep = currentWorkflow?.steps?.find(s => s.stepId === nextStepId);
+          if (nextStep && nextStep.route) {
+             this.router.navigate(['journey', 'auto', nextStep.route]);
+          }
+        }
+      });
     } else {
       this.form.markAllAsTouched();
     }

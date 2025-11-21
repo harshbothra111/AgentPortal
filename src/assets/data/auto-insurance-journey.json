@@ -18,7 +18,6 @@
     "lastUpdated": "2023-10-27T10:25:00Z"
   },
   "navigation": {
-    "nextStepId": "step_vehicle_usage",
     "previousStepId": null,
     "canGoBack": false,
     "canGoNext": true,
@@ -30,10 +29,45 @@
       "label": "Vehicle Details",
       "status": "IN_PROGRESS",
       "order": 1,
+      "lookups": {
+        "make": [
+          { "code": "TOY", "label": "Toyota" },
+          { "code": "HON", "label": "Honda" },
+          { "code": "FOR", "label": "Ford" },
+          { "code": "BMW", "label": "BMW" }
+        ],
+        "model": [
+          { "code": "COR", "label": "Corolla", "make": "TOY" },
+          { "code": "CAM", "label": "Camry", "make": "TOY" },
+          { "code": "RAV", "label": "RAV4", "make": "TOY" },
+          { "code": "CIV", "label": "Civic", "make": "HON" },
+          { "code": "ACC", "label": "Accord", "make": "HON" },
+          { "code": "CRV", "label": "CR-V", "make": "HON" },
+          { "code": "F15", "label": "F-150", "make": "FOR" },
+          { "code": "MUS", "label": "Mustang", "make": "FOR" },
+          { "code": "EXP", "label": "Explorer", "make": "FOR" },
+          { "code": "3SER", "label": "3 Series", "make": "BMW" },
+          { "code": "5SER", "label": "5 Series", "make": "BMW" },
+          { "code": "X5", "label": "X5", "make": "BMW" }
+        ], 
+        "variant": [],
+        "registrationYear": [
+          { "code": "2024", "label": "2024" },
+          { "code": "2023", "label": "2023" },
+          { "code": "2022", "label": "2022" },
+          { "code": "2021", "label": "2021" }
+        ],
+        "primaryUse": [
+          { "code": "COMMUTE", "label": "Commuting to Work/School" },
+          { "code": "PLEASURE", "label": "Pleasure Use Only" },
+          { "code": "BUSINESS", "label": "Business Use" }
+        ]
+      },
       "steps": [
         {
           "stepId": "step_vehicle_identification",
           "label": "Vehicle Identification",
+          "route": "vehicle-identification",
           "status": "IN_PROGRESS",
           "order": 1,
           "metadata": {
@@ -88,40 +122,12 @@
               "required": true,
               "order": 5
             }
-          ],
-          "lookups": {
-            "make": [
-              { "code": "TOY", "label": "Toyota" },
-              { "code": "HON", "label": "Honda" },
-              { "code": "FOR", "label": "Ford" },
-              { "code": "BMW", "label": "BMW" }
-            ],
-            "model": [
-              { "code": "COR", "label": "Corolla", "make": "TOY" },
-              { "code": "CAM", "label": "Camry", "make": "TOY" },
-              { "code": "RAV", "label": "RAV4", "make": "TOY" },
-              { "code": "CIV", "label": "Civic", "make": "HON" },
-              { "code": "ACC", "label": "Accord", "make": "HON" },
-              { "code": "CRV", "label": "CR-V", "make": "HON" },
-              { "code": "F15", "label": "F-150", "make": "FOR" },
-              { "code": "MUS", "label": "Mustang", "make": "FOR" },
-              { "code": "EXP", "label": "Explorer", "make": "FOR" },
-              { "code": "3SER", "label": "3 Series", "make": "BMW" },
-              { "code": "5SER", "label": "5 Series", "make": "BMW" },
-              { "code": "X5", "label": "X5", "make": "BMW" }
-            ], 
-            "variant": [],
-            "registrationYear": [
-              { "code": "2024", "label": "2024" },
-              { "code": "2023", "label": "2023" },
-              { "code": "2022", "label": "2022" },
-              { "code": "2021", "label": "2021" }
-            ]
-          }
+          ]
         },
         {
           "stepId": "step_vehicle_usage",
           "label": "Usage & History",
+          "route": "vehicle-usage",
           "status": "PENDING",
           "order": 2,
           "metadata": {
@@ -154,14 +160,7 @@
               "editable": true,
               "required": false
             }
-          ],
-          "lookups": {
-            "primaryUse": [
-              { "code": "COMMUTE", "label": "Commuting to Work/School" },
-              { "code": "PLEASURE", "label": "Pleasure Use Only" },
-              { "code": "BUSINESS", "label": "Business Use" }
-            ]
-          }
+          ]
         }
       ]
     },
@@ -170,10 +169,12 @@
       "label": "Driver Details",
       "status": "PENDING",
       "order": 2,
+      "lookups": {},
       "steps": [
         {
           "stepId": "step_primary_driver",
           "label": "Primary Driver",
+          "route": "primary-driver",
           "status": "PENDING",
           "order": 1,
           "metadata": {
@@ -185,20 +186,19 @@
             { "key": "lastName", "id": "fld_last_name", "visible": true, "editable": true },
             { "key": "dob", "id": "fld_dob", "visible": true, "editable": true },
             { "key": "licenseNumber", "id": "fld_license", "visible": true, "editable": true }
-          ],
-          "lookups": {}
+          ]
         },
         {
           "stepId": "step_additional_drivers",
           "label": "Additional Drivers",
+          "route": "additional-drivers",
           "status": "PENDING",
           "order": 2,
           "metadata": {
             "isEditable": false,
             "isVisible": true
           },
-          "fields": [],
-          "lookups": {}
+          "fields": []
         }
       ]
     },
@@ -207,10 +207,18 @@
       "label": "Coverage",
       "status": "PENDING",
       "order": 3,
+      "lookups": {
+        "planType": [
+          { "code": "LIABILITY", "label": "Liability Only" },
+          { "code": "COMPREHENSIVE", "label": "Comprehensive" },
+          { "code": "PREMIUM", "label": "Premium Plus" }
+        ]
+      },
       "steps": [
         {
           "stepId": "step_plans",
           "label": "Select Plan",
+          "route": "select-plan",
           "status": "PENDING",
           "order": 1,
           "metadata": {
@@ -219,14 +227,7 @@
           },
           "fields": [
             { "key": "planType", "id": "fld_plan_type", "visible": true, "editable": true }
-          ],
-          "lookups": {
-            "planType": [
-              { "code": "LIABILITY", "label": "Liability Only" },
-              { "code": "COMPREHENSIVE", "label": "Comprehensive" },
-              { "code": "PREMIUM", "label": "Premium Plus" }
-            ]
-          }
+          ]
         }
       ]
     },
@@ -235,18 +236,19 @@
       "label": "Review & Pay",
       "status": "PENDING",
       "order": 4,
+      "lookups": {},
       "steps": [
         {
           "stepId": "step_summary",
           "label": "Summary",
+          "route": "summary",
           "status": "PENDING",
           "order": 1,
           "metadata": {
             "isEditable": false,
             "isVisible": true
           },
-          "fields": [],
-          "lookups": {}
+          "fields": []
         }
       ]
     }

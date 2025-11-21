@@ -11,7 +11,7 @@
       <h5 class="border-bottom pb-2 mb-3">Vehicle Information</h5>
       @if (vehicleInfo()) {
         <div class="row">
-          <div class="col-md-6 mb-2"><strong>Year:</strong> {{ vehicleInfo().year }}</div>
+          <div class="col-md-6 mb-2"><strong>Year:</strong> {{ vehicleInfo().registrationYear }}</div>
           <div class="col-md-6 mb-2"><strong>Make:</strong> {{ vehicleInfo().make }}</div>
           <div class="col-md-6 mb-2"><strong>Model:</strong> {{ vehicleInfo().model }}</div>
         </div>
@@ -71,7 +71,7 @@
       <h5 class="border-bottom pb-2 mb-3">Selected Plan</h5>
       @if (plan()) {
         <div class="row">
-          <div class="col-md-12 mb-2"><strong>Plan:</strong> {{ plan().plan | titlecase }}</div>
+          <div class="col-md-12 mb-2"><strong>Plan:</strong> {{ plan().planType | titlecase }}</div>
         </div>
       } @else {
         <p class="text-muted fst-italic">No plan selected.</p>

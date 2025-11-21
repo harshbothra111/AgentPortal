@@ -1,7 +1,7 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap, map } from 'rxjs';
-import { JourneyResponse, Workflow, WorkflowStep } from '../models/journey.model';
+import { JourneyResponse, Workflow, WorkflowStep, JourneySubmitRequest } from '../models/journey.model';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +26,7 @@ export class JourneyService {
     const wf = this.currentWorkflow();
     const j = this._journey();
     if (!wf || !j) return null;
-    return wf.steps.find(s => s.stepId === j.journeyContext.currentStepId) || null;
+    return wf.steps?.find(s => s.stepId === j.journeyContext.currentStepId) || null;
   });
 
   public readonly progress = computed(() => {
@@ -43,9 +43,9 @@ export class JourneyService {
 
     // Check if current workflow requires input (has editable fields)
     const currentWf = j.workflows[currentWorkflowIndex];
-    const requiresInput = currentWf.steps.some(step => 
-      step.fields?.length > 0 && step.metadata?.isEditable !== false
-    );
+    const requiresInput = currentWf.steps?.some(step => 
+      (step.fields?.length ?? 0) > 0 && step.metadata?.isEditable !== false
+    ) ?? false;
 
     // If no input is required (e.g. summary/review), count it as completed
     if (!requiresInput) {
@@ -63,56 +63,45 @@ export class JourneyService {
   }
 
   getJourney(productId: string): Observable<JourneyResponse> {
-    // In a real app, productId would determine the endpoint
-    return this.http.get<JourneyResponse>('assets/data/auto-insurance-journey.json').pipe(
+    // Call the mock API endpoint
+    return this.http.get<JourneyResponse>(`/api/journey/${productId}`).pipe(
       tap(response => this._journey.set(response))
     );
   }
 
-  updateStep(workflowId: string, stepId: string) {
+  submitCurrentStep(data: any): Observable<JourneyResponse> {
     const currentJourney = this._journey();
-    if (currentJourney) {
-      // Update the journey context
-      const updatedJourney = {
-        ...currentJourney,
-        journeyContext: {
-          ...currentJourney.journeyContext,
-          currentWorkflowId: workflowId,
-          currentStepId: stepId
+    const currentStepId = this.currentStep()?.stepId;
+    
+    const payload: JourneySubmitRequest = {
+      lastJourneyResponse: currentJourney!,
+      userInput: data
+    };
+
+    return this.http.post<JourneyResponse>(`/api/journey/submit`, payload).pipe(
+      tap(response => {
+        // Update answers locally for summary view
+        if (currentStepId) {
+             this.updateAnswers(currentStepId, data);
         }
-      };
-      this._journey.set(updatedJourney);
-    }
+        this._journey.set(response);
+      })
+    );
   }
 
+  navigateBack(): Observable<JourneyResponse> {
+    const currentJourney = this._journey();
+    
+    const payload = {
+      lastJourneyResponse: currentJourney
+    };
 
-
-  // Helper to find next step logic (simplified for demo)
-  proceedToNextStep() {
-    const j = this._journey();
-    if (!j || !j.navigation.nextStepId) return;
-
-    // Find where the next step lives
-    let nextWorkflowId = j.journeyContext.currentWorkflowId;
-    let found = false;
-
-    // Search in current workflow
-    const currentWf = j.workflows.find(w => w.workflowId === nextWorkflowId);
-    if (currentWf?.steps.some(s => s.stepId === j.navigation.nextStepId)) {
-        found = true;
-    } else {
-        // Search other workflows
-        for (const wf of j.workflows) {
-            if (wf.steps.some(s => s.stepId === j.navigation.nextStepId)) {
-                nextWorkflowId = wf.workflowId;
-                found = true;
-                break;
-            }
-        }
-    }
-
-    if (found) {
-        this.updateStep(nextWorkflowId, j.navigation.nextStepId!);
-    }
+    return this.http.post<JourneyResponse>(`/api/journey/back`, payload).pipe(
+      tap(response => {
+        this._journey.set(response);
+      })
+    );
   }
+
+  // Removed updateStep and proceedToNextStep as they are now handled by the backend/interceptor
 }
