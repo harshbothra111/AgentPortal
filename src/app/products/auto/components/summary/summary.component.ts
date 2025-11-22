@@ -31,7 +31,6 @@ export class SummaryComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log('Final Submission:', this.submission());
     alert('Application Submitted Successfully!');
     this.router.navigate(['/']);
   }

@@ -61,17 +61,13 @@ export class JourneyService {
   getJourney(productId: string, onSuccess?: (res: JourneyResponse) => void): void {
     this.apiService.get<JourneyResponse>(API_ENDPOINTS.JOURNEY.GET_JOURNEY(productId)).subscribe({
       next: (response) => {
-        console.log('getJourney response:', response);
         this._journey.set(response);
         if (response.submissionData) {
-          console.log('Setting submission data from getJourney:', response.submissionData);
           this._submission.set(response.submissionData);
-        } else {
-          console.warn('No submissionData in getJourney response');
         }
         if (onSuccess) onSuccess(response);
       },
-      error: (err) => console.error('Error fetching journey:', err)
+      error: (err) => {}
     });
   }
 
@@ -82,8 +78,6 @@ export class JourneyService {
       submissionData: updatedSubmissionData,
       stepId: currentJourney?.journeyContext.currentStepId
     };
-
-    console.log('Submitting step with payload:', payload);
 
     return this.apiService.post<JourneyResponse>(API_ENDPOINTS.JOURNEY.SUBMIT_STEP, payload);
   }
@@ -153,15 +147,13 @@ export class JourneyService {
   submitStep(data: any) {
     this.submitCurrentStep(data).subscribe({
       next: (response) => {
-        console.log('Submit response:', response);
         this._journey.set(response);
         if (response.submissionData) {
-             console.log('Updating submission data from submit response:', response.submissionData);
              this._submission.set(response.submissionData);
         }
         this.handleNavigation(response);
       },
-      error: (err) => console.error('Error submitting step:', err)
+      error: (err) => {}
     });
   }
 }
