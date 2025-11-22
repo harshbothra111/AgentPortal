@@ -267,6 +267,14 @@ app.post('/api/journey/back', (req: Request, res: Response) => {
     setTimeout(() => res.json(response), 500);
 });
 
+app.get('/api/validate/registration/:regNo', (req: Request, res: Response) => {
+    const regNo = req.params['regNo'];
+    // Mock logic: 'TAKEN123' is taken
+    const isTaken = regNo.toUpperCase() === 'TAKEN123';
+    
+    res.json({ isTaken });
+});
+
 // Fallback to Angular index.html for non-API routes
 app.get(/.*/, (req: Request, res: Response) => {
     if (req.path.startsWith('/api')) {

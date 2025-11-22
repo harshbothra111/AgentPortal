@@ -23,7 +23,7 @@ export class JourneyComponent implements OnInit {
     }
 
     if (productId) {
-      this.journeyService.getJourney(productId).subscribe(response => {
+      this.journeyService.getJourney(productId, (response) => {
         const currentStepId = response.journeyContext.currentStepId;
         const workflow = response.workflows.find(w => w.steps?.some(s => s.stepId === currentStepId));
         const step = workflow?.steps?.find(s => s.stepId === currentStepId);

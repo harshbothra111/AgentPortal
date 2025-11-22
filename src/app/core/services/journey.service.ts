@@ -1,14 +1,15 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap, map } from 'rxjs';
+import { Observable } from 'rxjs';
 import { JourneyResponse, Workflow, WorkflowStep, JourneySubmitRequest } from '../models/journey.model';
+import { ApiService } from './api.service';
+import { API_ENDPOINTS } from '../config/api-endpoints';
 
 @Injectable({
   providedIn: 'root'
 })
 export class JourneyService {
-  private http = inject(HttpClient);
+  private apiService = inject(ApiService);
   private router = inject(Router);
   
   // State signals
@@ -57,12 +58,9 @@ export class JourneyService {
     return Math.round((completedCount / totalWorkflows) * 100);
   });
 
-  // updateAnswers removed as we use centralized submission data now
-
-  getJourney(productId: string): Observable<JourneyResponse> {
-    // Call the mock API endpoint
-    return this.http.get<JourneyResponse>(`/api/journey/${productId}`).pipe(
-      tap(response => {
+  getJourney(productId: string, onSuccess?: (res: JourneyResponse) => void): void {
+    this.apiService.get<JourneyResponse>(API_ENDPOINTS.JOURNEY.GET_JOURNEY(productId)).subscribe({
+      next: (response) => {
         console.log('getJourney response:', response);
         this._journey.set(response);
         if (response.submissionData) {
@@ -71,11 +69,13 @@ export class JourneyService {
         } else {
           console.warn('No submissionData in getJourney response');
         }
-      })
-    );
+        if (onSuccess) onSuccess(response);
+      },
+      error: (err) => console.error('Error fetching journey:', err)
+    });
   }
 
-  submitCurrentStep(updatedSubmissionData: any): Observable<JourneyResponse> {
+  private submitCurrentStep(updatedSubmissionData: any): Observable<JourneyResponse> {
     const currentJourney = this._journey();
     
     const payload: JourneySubmitRequest = {
@@ -85,16 +85,7 @@ export class JourneyService {
 
     console.log('Submitting step with payload:', payload);
 
-    return this.http.post<JourneyResponse>(`/api/journey/submit`, payload).pipe(
-      tap(response => {
-        console.log('Submit response:', response);
-        this._journey.set(response);
-        if (response.submissionData) {
-             console.log('Updating submission data from submit response:', response.submissionData);
-             this._submission.set(response.submissionData);
-        }
-      })
-    );
+    return this.apiService.post<JourneyResponse>(API_ENDPOINTS.JOURNEY.SUBMIT_STEP, payload);
   }
 
   navigateBack(): Observable<JourneyResponse> {
@@ -118,8 +109,7 @@ export class JourneyService {
       
       // Update navigation flags
       updatedJourney.navigation.canGoNext = true;
-      updatedJourney.navigation.canGoBack = currentIndex > 1; // If index was 1, prev is 0, so canGoBack becomes false? 
-      // Actually, let's check if there is a step before the previous one
+      updatedJourney.navigation.canGoBack = currentIndex > 1; 
       updatedJourney.navigation.previousStepId = currentIndex > 1 ? allSteps[currentIndex - 2].stepId : null;
 
       // Update the signal
@@ -137,8 +127,6 @@ export class JourneyService {
       observer.complete();
     });
   }
-
-  // Removed updateStep and proceedToNextStep as they are now handled by the backend/interceptor
 
   // Helper to handle navigation based on response
   private handleNavigation(response: JourneyResponse) {
@@ -163,8 +151,17 @@ export class JourneyService {
   }
 
   submitStep(data: any) {
-    this.submitCurrentStep(data).subscribe(response => {
-      this.handleNavigation(response);
+    this.submitCurrentStep(data).subscribe({
+      next: (response) => {
+        console.log('Submit response:', response);
+        this._journey.set(response);
+        if (response.submissionData) {
+             console.log('Updating submission data from submit response:', response.submissionData);
+             this._submission.set(response.submissionData);
+        }
+        this.handleNavigation(response);
+      },
+      error: (err) => console.error('Error submitting step:', err)
     });
   }
 }

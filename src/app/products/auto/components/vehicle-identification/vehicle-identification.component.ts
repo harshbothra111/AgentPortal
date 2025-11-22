@@ -1,12 +1,15 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { JourneyService } from '../../../../core/services/journey.service';
-import { MockValidationService } from '../../../../core/services/mock-validation.service';
+import { ApiService } from '../../../../core/services/api.service';
 import { TextInputComponent } from '../../../../core/components/form-controls/text-input/text-input.component';
 import { SelectInputComponent } from '../../../../core/components/form-controls/select-input/select-input.component';
 import { LookupOption } from '../../../../core/models/journey.model';
+import { API_ENDPOINTS } from '../../../../core/config/api-endpoints';
 
 @Component({
   selector: 'app-vehicle-identification',
@@ -19,7 +22,7 @@ export class VehicleIdentificationComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private journeyService = inject(JourneyService);
-  private validationService = inject(MockValidationService);
+  private apiService = inject(ApiService);
 
   form!: FormGroup;
   
@@ -38,7 +41,11 @@ export class VehicleIdentificationComponent implements OnInit {
 
   private initForm() {
     this.form = this.fb.group({
-      registrationNumber: ['', [Validators.required], [this.validationService.uniqueRegistrationValidator()]],
+      registrationNumber: ['', {
+        validators: [Validators.required],
+        asyncValidators: [this.uniqueRegistrationValidator()],
+        updateOn: 'blur'
+      }],
       make: ['', Validators.required],
       model: [{ value: '', disabled: true }, Validators.required],
       variant: [''], // Optional for now
@@ -49,6 +56,22 @@ export class VehicleIdentificationComponent implements OnInit {
     this.form.get('make')?.valueChanges.subscribe(make => {
       this.onMakeChange(make);
     });
+  }
+
+  // Simulate a server check for unique registration number
+  private uniqueRegistrationValidator(): AsyncValidatorFn {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      if (!control.value) {
+        return of(null);
+      }
+      
+      return this.apiService.get<{ isTaken: boolean }>(API_ENDPOINTS.JOURNEY.VALIDATE_REGISTRATION(control.value)).pipe(
+        map(response => {
+          return response.isTaken ? { uniqueRegistration: true } : null;
+        }),
+        catchError(() => of(null))
+      );
+    };
   }
 
   private patchData() {
