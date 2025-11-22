@@ -23,10 +23,10 @@
     <!-- Vehicle Usage -->
     <div class="mb-4">
       <h5 class="border-bottom pb-2 mb-3">Vehicle Usage</h5>
-      @if (vehicleUsage()) {
+      @if (vehicleInfo()) {
         <div class="row">
-          <div class="col-md-6 mb-2"><strong>Primary Use:</strong> {{ vehicleUsage().primaryUse }}</div>
-          <div class="col-md-6 mb-2"><strong>Annual Mileage:</strong> {{ vehicleUsage().annualMileage }}</div>
+          <div class="col-md-6 mb-2"><strong>Primary Use:</strong> {{ vehicleInfo().primaryUse }}</div>
+          <div class="col-md-6 mb-2"><strong>Annual Mileage:</strong> {{ vehicleInfo().annualMileage }}</div>
         </div>
       } @else {
         <p class="text-muted fst-italic">No usage information provided.</p>
@@ -38,9 +38,9 @@
       <h5 class="border-bottom pb-2 mb-3">Primary Driver</h5>
       @if (primaryDriver()) {
         <div class="row">
-          <div class="col-md-6 mb-2"><strong>Name:</strong> {{ primaryDriver().firstName }} {{ primaryDriver().lastName }}</div>
-          <div class="col-md-6 mb-2"><strong>DOB:</strong> {{ primaryDriver().dob }}</div>
-          <div class="col-md-6 mb-2"><strong>License:</strong> {{ primaryDriver().licenseNumber }}</div>
+          <div class="col-md-6 mb-2"><strong>Name:</strong> {{ primaryDriver()?.firstName }} {{ primaryDriver()?.lastName }}</div>
+          <div class="col-md-6 mb-2"><strong>DOB:</strong> {{ primaryDriver()?.dob }}</div>
+          <div class="col-md-6 mb-2"><strong>License:</strong> {{ primaryDriver()?.licenseNumber }}</div>
         </div>
       } @else {
         <p class="text-muted fst-italic">No primary driver information provided.</p>
@@ -50,8 +50,8 @@
     <!-- Additional Drivers -->
     <div class="mb-4">
       <h5 class="border-bottom pb-2 mb-3">Additional Drivers</h5>
-      @if (additionalDrivers() && additionalDrivers().drivers && additionalDrivers().drivers.length > 0) {
-        @for (driver of additionalDrivers().drivers; track $index) {
+      @if (additionalDrivers() && additionalDrivers().length > 0) {
+        @for (driver of additionalDrivers(); track $index) {
           <div class="mb-3 p-3 bg-light rounded">
             <h6 class="mb-2">Driver {{ $index + 1 }}</h6>
             <div class="row">

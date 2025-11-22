@@ -86,7 +86,7 @@ export class VehicleIdentificationComponent implements OnInit {
 
   private onMakeChange(make: string) {
     const modelControl = this.form.get('model');
-    modelControl?.reset();
+    modelControl?.setValue('');
     
     if (make) {
       modelControl?.enable();
@@ -103,16 +103,13 @@ export class VehicleIdentificationComponent implements OnInit {
 
   onSubmit() {
     if (this.form.valid) {
-      this.journeyService.submitCurrentStep(this.form.value).subscribe({
-        next: (response) => {
-          const nextStepId = response.journeyContext.currentStepId;
-          const currentWorkflow = response.workflows.find(w => w.workflowId === response.journeyContext.currentWorkflowId);
-          const nextStep = currentWorkflow?.steps?.find(s => s.stepId === nextStepId);
-          if (nextStep && nextStep.route) {
-             this.router.navigate(['journey', 'auto', nextStep.route]);
-          }
-        }
-      });
+      const currentSubmission = this.journeyService.submission() || {};
+      const updatedSubmission = JSON.parse(JSON.stringify(currentSubmission));
+      
+      // Update vehicle details
+      updatedSubmission.vehicle = { ...updatedSubmission.vehicle, ...this.form.value };
+      
+      this.journeyService.submitStep(updatedSubmission);
     } else {
       this.form.markAllAsTouched();
     }

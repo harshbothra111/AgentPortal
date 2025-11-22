@@ -32,9 +32,10 @@ export class AdditionalDriversComponent implements OnInit {
       drivers: this.fb.array([])
     });
 
-    const step = this.journeyService.currentStep();
-    if (step && step.data && step.data.drivers && Array.isArray(step.data.drivers)) {
-      step.data.drivers.forEach((driver: any) => {
+    const submission = this.journeyService.submission();
+    if (submission && submission.drivers && Array.isArray(submission.drivers)) {
+      const additionalDrivers = submission.drivers.filter((d: any) => !d.isPrimary);
+      additionalDrivers.forEach((driver: any) => {
         this.addDriver(driver);
       });
     }
@@ -55,30 +56,29 @@ export class AdditionalDriversComponent implements OnInit {
   }
 
   onBack() {
-    this.journeyService.navigateBack().subscribe({
-      next: (response) => {
-        const nextStepId = response.journeyContext.currentStepId;
-        const currentWorkflow = response.workflows.find(w => w.workflowId === response.journeyContext.currentWorkflowId);
-        const nextStep = currentWorkflow?.steps?.find(s => s.stepId === nextStepId);
-        if (nextStep && nextStep.route) {
-           this.router.navigate(['journey', 'auto', nextStep.route]);
-        }
-      }
-    });
+    this.journeyService.goBack();
   }
 
   onSubmit() {
     if (this.form.valid) {
-      this.journeyService.submitCurrentStep(this.form.value).subscribe({
-        next: (response) => {
-          const nextStepId = response.journeyContext.currentStepId;
-          const currentWorkflow = response.workflows.find(w => w.workflowId === response.journeyContext.currentWorkflowId);
-          const nextStep = currentWorkflow?.steps?.find(s => s.stepId === nextStepId);
-          if (nextStep && nextStep.route) {
-             this.router.navigate(['journey', 'auto', nextStep.route]);
-          }
-        }
-      });
+      const currentSubmission = this.journeyService.submission() || {};
+      const updatedSubmission = JSON.parse(JSON.stringify(currentSubmission));
+      
+      const existingDrivers = updatedSubmission.drivers || [];
+      
+      // Preserve existing primary drivers
+      const primaryDrivers = existingDrivers.filter((d: any) => d.isPrimary);
+      
+      // Process additional drivers from the form
+      const additionalDrivers = this.form.value.drivers.map((d: any) => ({
+        ...d,
+        isPrimary: false // Ensure additional drivers are not marked as primary
+      }));
+      
+      // Combine primary and additional drivers
+      updatedSubmission.drivers = [...primaryDrivers, ...additionalDrivers];
+
+      this.journeyService.submitStep(updatedSubmission);
     } else {
       this.form.markAllAsTouched();
     }

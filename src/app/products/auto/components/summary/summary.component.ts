@@ -2,6 +2,7 @@ import { Component, OnInit, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { JourneyService } from '../../../../core/services/journey.service';
+import { AutoSubmission } from '../../models/auto-submission.model';
 
 @Component({
   selector: 'app-summary',
@@ -14,33 +15,23 @@ export class SummaryComponent implements OnInit {
   private router = inject(Router);
   private journeyService = inject(JourneyService);
 
-  answers = this.journeyService.answers;
+  submission = computed(() => this.journeyService.submission() as AutoSubmission);
 
-  // Computed signals for easy access to step data
-  vehicleInfo = computed(() => this.answers()['step_vehicle_identification']);
-  vehicleUsage = computed(() => this.answers()['step_vehicle_usage']);
-  primaryDriver = computed(() => this.answers()['step_primary_driver']);
-  additionalDrivers = computed(() => this.answers()['step_additional_drivers']);
-  plan = computed(() => this.answers()['step_plans']);
+  // Computed signals for easy access to domain data
+  vehicleInfo = computed(() => this.submission()?.vehicle);
+  primaryDriver = computed(() => this.submission()?.drivers?.find(d => d.isPrimary));
+  additionalDrivers = computed(() => this.submission()?.drivers?.filter(d => !d.isPrimary));
+  plan = computed(() => this.submission()?.coverage);
 
   ngOnInit() {
   }
 
   onBack() {
-    this.journeyService.navigateBack().subscribe({
-      next: (response) => {
-        const nextStepId = response.journeyContext.currentStepId;
-        const currentWorkflow = response.workflows.find(w => w.workflowId === response.journeyContext.currentWorkflowId);
-        const nextStep = currentWorkflow?.steps?.find(s => s.stepId === nextStepId);
-        if (nextStep && nextStep.route) {
-           this.router.navigate(['journey', 'auto', nextStep.route]);
-        }
-      }
-    });
+    this.journeyService.goBack();
   }
 
   onSubmit() {
-    console.log('Final Submission:', this.answers());
+    console.log('Final Submission:', this.submission());
     alert('Application Submitted Successfully!');
     this.router.navigate(['/']);
   }

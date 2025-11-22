@@ -1,15 +1,16 @@
-export interface JourneyResponse {
+export interface JourneyResponse<T = any> {
   meta: MetaData;
   product: ProductInfo;
   journeyContext: JourneyContext;
   navigation: NavigationControl;
   workflows: Workflow[];
+  submissionData?: T; // Generic domain-centric data model
   extraData?: any; // Generic container for additional display data
 }
 
-export interface JourneySubmitRequest {
-  lastJourneyResponse: JourneyResponse;
-  userInput: any;
+export interface JourneySubmitRequest<T = any> {
+  submissionData?: T;
+  stepId?: string;
 }
 
 export interface MetaData {
@@ -57,7 +58,6 @@ export interface WorkflowStep {
   order: number;
   metadata: StepMetadata;
   fields?: FieldMetadata[]; // Optional, only present if active
-  data?: any; // Container for complex step data (e.g. arrays, nested objects)
 }
 
 export interface StepMetadata {

@@ -9,7 +9,7 @@
     class="form-select"
     [class.is-invalid]="control.invalid && (control.dirty || control.touched)"
   >
-    <option value="">Select...</option>
+    <option value="">Select One</option>
     @for (opt of options; track opt.code) {
       <option [value]="opt.code">{{ opt.label }}</option>
     }

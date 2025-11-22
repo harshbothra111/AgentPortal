@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { JourneyService } from '../../services/journey.service';
 
 @Component({
@@ -13,6 +13,7 @@ import { JourneyService } from '../../services/journey.service';
 export class JourneyComponent implements OnInit {
   journeyService = inject(JourneyService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   ngOnInit() {
     let productId = this.route.snapshot.paramMap.get('productId');
@@ -22,7 +23,15 @@ export class JourneyComponent implements OnInit {
     }
 
     if (productId) {
-      this.journeyService.getJourney(productId).subscribe();
+      this.journeyService.getJourney(productId).subscribe(response => {
+        const currentStepId = response.journeyContext.currentStepId;
+        const workflow = response.workflows.find(w => w.steps?.some(s => s.stepId === currentStepId));
+        const step = workflow?.steps?.find(s => s.stepId === currentStepId);
+
+        if (step && step.route) {
+          this.router.navigate([step.route], { relativeTo: this.route });
+        }
+      });
     }
   }
 }

@@ -61,30 +61,18 @@ export class VehicleUsageComponent implements OnInit {
   }
 
   onBack() {
-    this.journeyService.navigateBack().subscribe({
-      next: (response) => {
-        const nextStepId = response.journeyContext.currentStepId;
-        const currentWorkflow = response.workflows.find(w => w.workflowId === response.journeyContext.currentWorkflowId);
-        const nextStep = currentWorkflow?.steps?.find(s => s.stepId === nextStepId);
-        if (nextStep && nextStep.route) {
-           this.router.navigate(['journey', 'auto', nextStep.route]);
-        }
-      }
-    });
+    this.journeyService.goBack();
   }
 
   onSubmit() {
     if (this.form.valid) {
-      this.journeyService.submitCurrentStep(this.form.value).subscribe({
-        next: (response) => {
-          const nextStepId = response.journeyContext.currentStepId;
-          const currentWorkflow = response.workflows.find(w => w.workflowId === response.journeyContext.currentWorkflowId);
-          const nextStep = currentWorkflow?.steps?.find(s => s.stepId === nextStepId);
-          if (nextStep && nextStep.route) {
-             this.router.navigate(['journey', 'auto', nextStep.route]);
-          }
-        }
-      });
+      const currentSubmission = this.journeyService.submission() || {};
+      const updatedSubmission = JSON.parse(JSON.stringify(currentSubmission));
+      
+      // Update vehicle usage details
+      updatedSubmission.vehicle = { ...updatedSubmission.vehicle, ...this.form.value };
+      
+      this.journeyService.submitStep(updatedSubmission);
     } else {
       this.form.markAllAsTouched();
     }
