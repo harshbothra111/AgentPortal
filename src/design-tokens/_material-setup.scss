@@ -1,0 +1,7 @@
+@use '@angular/material' as mat;
+@use 'theme';
+
+@mixin init() {
+  @include mat.core();
+  @include mat.all-component-themes(theme.$app-theme);
+}

@@ -1,0 +1,7 @@
+
+// Import Bootstrap
+@use 'bootstrap/scss/bootstrap' with (
+  $primary: #00263E,
+  $secondary: #0072CE,
+  $font-family-base: ('Work Sans', sans-serif)
+);

@@ -1,0 +1,12 @@
+@use '@angular/material' as mat;
+@use './palettes';
+
+:root {
+  --primary-color: #{mat.m2-get-color-from-palette(palettes.$primary-palette)};
+  --accent-color: #{mat.m2-get-color-from-palette(palettes.$accent-palette)};
+  --warn-color: #{mat.m2-get-color-from-palette(palettes.$warn-palette)};
+  --bg-color: rgb(233, 244, 249);
+  --surface-color: #ffffff;
+  --text-color: rgb(60, 71, 85);
+  --spacing-unit: 8px;
+}

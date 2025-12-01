@@ -1,0 +1,11 @@
+@use 'vendors';
+@use 'tokens';
+@use 'bootstrap';
+@use 'material-overrides';
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: "Work Sans", sans-serif;
+  margin: 0;
+}
