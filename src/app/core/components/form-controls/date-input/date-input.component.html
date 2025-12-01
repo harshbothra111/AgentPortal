@@ -1,0 +1,23 @@
+<mat-form-field appearance="outline" class="w-100">
+  <mat-label>{{ label }}</mat-label>
+  <input matInput [matDatepicker]="picker" [formControl]="control" [id]="id" [placeholder]="placeholder" [min]="min" [max]="max">
+  <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+  
+  @if (control.invalid && (control.dirty || control.touched)) {
+    <mat-error>
+      @if (control.hasError('required')) {
+        {{ label }} is required.
+      }
+      @if (control.hasError('matDatepickerParse')) {
+        Invalid date format.
+      }
+      @if (control.hasError('matDatepickerMin')) {
+        Date is too early.
+      }
+      @if (control.hasError('matDatepickerMax')) {
+        Date is too late.
+      }
+    </mat-error>
+  }
+</mat-form-field>

@@ -1,7 +1,7 @@
 <div class="mb-3">
   <label class="d-block mb-2" style="color: rgba(0,0,0,0.6);">{{ label }}</label>
   
-  <mat-radio-group [formControl]="control" [id]="id" class="d-flex flex-column flex-md-row gap-3">
+  <mat-radio-group color="primary" [formControl]="control" [id]="id" class="d-flex flex-column flex-md-row gap-3">
     @for (opt of options; track opt.code) {
       <mat-radio-button [value]="opt.code">{{ opt.label }}</mat-radio-button>
     }

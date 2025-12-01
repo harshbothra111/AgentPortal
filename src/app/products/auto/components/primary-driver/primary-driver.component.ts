@@ -7,11 +7,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { JourneyService } from '../../../../core/services/journey.service';
 import { TextInputComponent } from '../../../../core/components/form-controls/text-input/text-input.component';
+import { DateInputComponent } from '../../../../core/components/form-controls/date-input/date-input.component';
 
 @Component({
   selector: 'app-primary-driver',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatButtonModule, MatIconModule, TextInputComponent],
+  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatButtonModule, MatIconModule, TextInputComponent, DateInputComponent],
   templateUrl: './primary-driver.component.html',
   styleUrl: './primary-driver.component.scss'
 })
