@@ -2,6 +2,9 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { JourneyService } from '../../../../core/services/journey.service';
 import { RadioInputComponent } from '../../../../core/components/form-controls/radio-input/radio-input.component';
 import { LookupOption } from '../../../../core/models/journey.model';
@@ -9,7 +12,7 @@ import { LookupOption } from '../../../../core/models/journey.model';
 @Component({
   selector: 'app-select-plan',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RadioInputComponent],
+  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatButtonModule, MatIconModule, RadioInputComponent],
   templateUrl: './select-plan.component.html',
   styleUrl: './select-plan.component.scss'
 })

@@ -1,29 +1,17 @@
 @if (journeyService.journey(); as journey) {
-  <div class="container mt-4">
+  <div class="container py-3">
     <!-- Progress Bar -->
-    <div class="row mb-4">
-      <div class="col-12">
-        <div class="d-flex justify-content-between mb-1">
-           <span class="fw-bold text-primary">{{ journeyService.currentWorkflow()?.label }}</span>
-           <span class="text-muted small">{{ journeyService.progress() }}% Complete</span>
-        </div>
-        <div class="progress" style="height: 10px;">
-          <div class="progress-bar bg-primary" 
-               role="progressbar" 
-               [style.width.%]="journeyService.progress()" 
-               [attr.aria-valuenow]="journeyService.progress()" 
-               aria-valuemin="0" 
-               aria-valuemax="100">
-          </div>
-        </div>
+    <div class="mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+         <span class="mat-subtitle-2 text-primary">{{ journeyService.currentWorkflow()?.label }}</span>
+         <span class="mat-caption text-muted">{{ journeyService.progress() }}% Complete</span>
       </div>
+      <mat-progress-bar mode="determinate" [value]="journeyService.progress()"></mat-progress-bar>
     </div>
 
     <!-- Main Content -->
-    <div class="row justify-content-center">
-      <div class="col-12">
-        <router-outlet></router-outlet>
-      </div>
+    <div>
+      <router-outlet></router-outlet>
     </div>
   </div>
 }

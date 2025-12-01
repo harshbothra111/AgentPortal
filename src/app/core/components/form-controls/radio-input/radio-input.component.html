@@ -1,25 +1,14 @@
 <div class="mb-3">
-  <label class="form-label d-block">
-    {{ label }}
-    @if (control.hasValidator(null!) || control.errors?.['required']) { <span class="text-danger">*</span> }
-  </label>
+  <label class="d-block mb-2" style="color: rgba(0,0,0,0.6);">{{ label }}</label>
   
-  @for (opt of options; track opt.code) {
-    <div class="form-check form-check-inline">
-      <input 
-        class="form-check-input" 
-        type="radio" 
-        [formControl]="control" 
-        [id]="id + '_' + opt.code" 
-        [value]="opt.code"
-        [class.is-invalid]="control.invalid && (control.dirty || control.touched)"
-      >
-      <label class="form-check-label" [attr.for]="id + '_' + opt.code">{{ opt.label }}</label>
-    </div>
-  }
+  <mat-radio-group [formControl]="control" [id]="id" class="d-flex flex-column gap-2">
+    @for (opt of options; track opt.code) {
+      <mat-radio-button [value]="opt.code">{{ opt.label }}</mat-radio-button>
+    }
+  </mat-radio-group>
 
   @if (control.invalid && (control.dirty || control.touched)) {
-    <div class="text-danger small mt-1">
+    <div class="text-danger small mt-1" style="font-size: 75%;">
       @if (control.hasError('required')) {
         Please select an option.
       }

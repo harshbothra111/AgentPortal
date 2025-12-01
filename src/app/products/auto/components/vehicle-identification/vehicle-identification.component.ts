@@ -4,6 +4,9 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractContro
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { JourneyService } from '../../../../core/services/journey.service';
 import { ApiService } from '../../../../core/services/api.service';
 import { TextInputComponent } from '../../../../core/components/form-controls/text-input/text-input.component';
@@ -14,7 +17,7 @@ import { API_ENDPOINTS } from '../../../../core/config/api-endpoints';
 @Component({
   selector: 'app-vehicle-identification',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TextInputComponent, SelectInputComponent],
+  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatButtonModule, MatIconModule, TextInputComponent, SelectInputComponent],
   templateUrl: './vehicle-identification.component.html',
   styleUrl: './vehicle-identification.component.scss'
 })

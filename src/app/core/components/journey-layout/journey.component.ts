@@ -1,12 +1,13 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { JourneyService } from '../../services/journey.service';
 
 @Component({
   selector: 'app-journey',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
+  imports: [CommonModule, RouterOutlet, MatProgressBarModule],
   templateUrl: './journey.component.html',
   styleUrl: './journey.component.scss'
 })

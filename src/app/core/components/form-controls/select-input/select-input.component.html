@@ -1,25 +1,17 @@
-<div class="mb-3">
-  <label [attr.for]="id" class="form-label">
-    {{ label }}
-    @if (control.hasValidator(null!) || control.errors?.['required']) { <span class="text-danger">*</span> }
-  </label>
-  <select 
-    [formControl]="control" 
-    [id]="id" 
-    class="form-select"
-    [class.is-invalid]="control.invalid && (control.dirty || control.touched)"
-  >
-    <option value="">Select One</option>
+<mat-form-field appearance="outline" class="w-100">
+  <mat-label>{{ label }}</mat-label>
+  <mat-select [formControl]="control" [id]="id">
+    <mat-option>-- Select --</mat-option>
     @for (opt of options; track opt.code) {
-      <option [value]="opt.code">{{ opt.label }}</option>
+      <mat-option [value]="opt.code">{{ opt.label }}</mat-option>
     }
-  </select>
+  </mat-select>
 
   @if (control.invalid && (control.dirty || control.touched)) {
-    <div class="invalid-feedback">
+    <mat-error>
       @if (control.hasError('required')) {
         Please select a {{ label | lowercase }}.
       }
-    </div>
+    </mat-error>
   }
-</div>
+</mat-form-field>

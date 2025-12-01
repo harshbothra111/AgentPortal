@@ -1,13 +1,16 @@
 import { Component, OnInit, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { JourneyService } from '../../../../core/services/journey.service';
 import { AutoSubmission } from '../../models/auto-submission.model';
 
 @Component({
   selector: 'app-summary',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule],
   templateUrl: './summary.component.html',
   styleUrl: './summary.component.scss'
 })

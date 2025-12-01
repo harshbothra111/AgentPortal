@@ -1,12 +1,12 @@
-<div class="card shadow-sm border-0">
-  <div class="card-header bg-white border-bottom-0 pt-4 px-4">
-    <h3 class="card-title text-primary mb-1">Usage & History</h3>
-    <p class="text-muted mb-0">Tell us how you use your car.</p>
-  </div>
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title class="text-primary">Usage & History</mat-card-title>
+    <mat-card-subtitle>Tell us how you use your car.</mat-card-subtitle>
+  </mat-card-header>
   
-  <div class="card-body px-4">
+  <mat-card-content class="pt-3">
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <div class="row">
+      <div class="row g-3">
         <div class="col-12">
           <app-radio-input 
             [control]="$any(form.get('primaryUse'))" 
@@ -16,7 +16,7 @@
           </app-radio-input>
         </div>
         
-        <div class="col-md-6">
+        <div class="col-12 col-md-6">
           <app-text-input 
             [control]="$any(form.get('annualMileage'))" 
             label="Annual Mileage" 
@@ -27,15 +27,15 @@
         </div>
       </div>
 
-      <div class="d-flex justify-content-between mt-4">
-        <button type="button" class="btn btn-outline-secondary px-4" (click)="onBack()">
-          <i class="fa-solid fa-arrow-left me-2"></i> Back
+      <div class="d-flex justify-content-between align-items-center mt-4 gap-3">
+        <button mat-stroked-button type="button" (click)="onBack()">
+          <mat-icon>arrow_back</mat-icon> Back
         </button>
         
-        <button type="submit" class="btn btn-primary px-4">
-          Next <i class="fa-solid fa-arrow-right ms-2"></i>
+        <button mat-flat-button color="primary" type="submit">
+          Next <mat-icon>arrow_forward</mat-icon>
         </button>
       </div>
     </form>
-  </div>
-</div>
+  </mat-card-content>
+</mat-card>

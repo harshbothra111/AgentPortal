@@ -1,17 +1,54 @@
 /* Global styles */
+@use '@angular/material' as mat;
 
-/* Optionally override Bootstrap variables BEFORE loading Bootstrap.
-	Example:
-	$primary: #0d6efd;
-	$font-family-sans-serif: 'Segoe UI', Arial, sans-serif;
-*/
+// Import Bootstrap
+@import 'bootstrap/scss/bootstrap';
 
-@import "bootstrap/dist/css/bootstrap.min.css";
+@include mat.core();
 
-/* Font Awesome (installed locally) */
+// Define palettes
+$primary-palette: mat.m2-define-palette(mat.$m2-indigo-palette);
+$accent-palette: mat.m2-define-palette(mat.$m2-pink-palette, A200, A100, A400);
+$warn-palette: mat.m2-define-palette(mat.$m2-red-palette);
+
+// Create the theme object
+$app-theme: mat.m2-define-light-theme((
+  color: (
+    primary: $primary-palette,
+    accent: $accent-palette,
+    warn: $warn-palette,
+  ),
+  typography: mat.m2-define-typography-config(),
+  density: 0,
+));
+
+// Include theme styles for core and all components
+@include mat.all-component-themes($app-theme);
+
+/* Design Tokens (CSS Variables) */
+:root {
+  --primary-color: #{mat.m2-get-color-from-palette($primary-palette)};
+  --accent-color: #{mat.m2-get-color-from-palette($accent-palette)};
+  --warn-color: #{mat.m2-get-color-from-palette($warn-palette)};
+  --bg-color: #fafafa;
+  --surface-color: #ffffff;
+  --text-color: rgba(0, 0, 0, 0.87);
+  --spacing-unit: 8px;
+}
+
+/* Font Awesome */
 @import '@fortawesome/fontawesome-free/css/all.min.css';
 
-/* Custom global tweaks can follow */
 body {
-  background-color: #f8f9fa;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  margin: 0;
 }
+
+/* Layout Utilities */
+/* Removed custom layout utilities in favor of Bootstrap classes */
+
+
+/* Card Shim - Removed, using MatCard */
+

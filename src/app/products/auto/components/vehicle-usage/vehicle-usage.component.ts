@@ -2,6 +2,9 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { JourneyService } from '../../../../core/services/journey.service';
 import { TextInputComponent } from '../../../../core/components/form-controls/text-input/text-input.component';
 import { RadioInputComponent } from '../../../../core/components/form-controls/radio-input/radio-input.component';
@@ -10,7 +13,7 @@ import { LookupOption } from '../../../../core/models/journey.model';
 @Component({
   selector: 'app-vehicle-usage',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TextInputComponent, RadioInputComponent],
+  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatButtonModule, MatIconModule, TextInputComponent, RadioInputComponent],
   templateUrl: './vehicle-usage.component.html',
   styleUrl: './vehicle-usage.component.scss'
 })

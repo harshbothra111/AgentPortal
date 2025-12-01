@@ -1,19 +1,15 @@
-<div class="mb-3">
-  <label [attr.for]="id" class="form-label">
-    {{ label }}
-    @if (control.hasValidator(null!) || control.errors?.['required']) { <span class="text-danger">*</span> }
-  </label>
+<mat-form-field appearance="outline" class="w-100">
+  <mat-label>{{ label }}</mat-label>
   <input 
+    matInput 
     [type]="type" 
     [formControl]="control" 
     [id]="id" 
     [placeholder]="placeholder"
-    class="form-control"
-    [class.is-invalid]="control.invalid && (control.dirty || control.touched)"
   >
   
   @if (control.invalid && (control.dirty || control.touched)) {
-    <div class="invalid-feedback">
+    <mat-error>
       @if (control.hasError('required')) {
         {{ label }} is required.
       }
@@ -23,9 +19,9 @@
       @if (control.hasError('email')) {
         Please enter a valid email.
       }
-    </div>
+    </mat-error>
   }
   @if (control.pending) {
-    <div class="text-info small mt-1">Checking...</div>
+    <mat-hint>Checking...</mat-hint>
   }
-</div>
+</mat-form-field>
