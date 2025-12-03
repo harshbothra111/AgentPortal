@@ -15,7 +15,7 @@ const distPath = path.join(process.cwd(), 'dist/AgentPortal/browser');
 app.use(express.static(distPath));
 
 // Load initial data
-const dataPath = path.join(process.cwd(), 'src/assets/data/auto-insurance-journey.json');
+const dataPath = path.join(distPath, 'assets/products/auto/auto-insurance-journey.json');
 let journeyState: any = null;
 
 // Domain Model State

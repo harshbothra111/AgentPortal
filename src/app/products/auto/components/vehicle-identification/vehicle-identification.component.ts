@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -35,6 +34,7 @@ export class VehicleIdentificationComponent implements OnInit {
   yearOptions: LookupOption[] = [];
   
   private allModels: LookupOption[] = [];
+  private initialRegistrationNumber: string | null = null;
 
   ngOnInit() {
     this.loadLookups();
@@ -67,13 +67,19 @@ export class VehicleIdentificationComponent implements OnInit {
       if (!control.value) {
         return of(null);
       }
+
+      // If the value hasn't changed from what we loaded, don't re-validate
+      if (this.initialRegistrationNumber && control.value === this.initialRegistrationNumber) {
+        return of(null);
+      }
       
-      return this.apiService.get<{ isTaken: boolean }>(API_ENDPOINTS.JOURNEY.VALIDATE_REGISTRATION(control.value)).pipe(
-        map(response => {
-          return response.isTaken ? { uniqueRegistration: true } : null;
-        }),
-        catchError(() => of(null))
-      );
+      return new Observable((observer) => {
+        this.apiService.get<{ isTaken: boolean }>(API_ENDPOINTS.VALIDATION.REGISTRATION(control.value))
+          .subscribe((response) => {
+            observer.next(response.isTaken ? { uniqueRegistration: true } : null);
+            observer.complete();
+          });
+      });
     };
   }
 
@@ -88,6 +94,9 @@ export class VehicleIdentificationComponent implements OnInit {
         }
       });
       if (Object.keys(values).length > 0) {
+        if (values['registrationNumber']) {
+          this.initialRegistrationNumber = values['registrationNumber'];
+        }
         this.form.patchValue(values);
         // Trigger change detection logic manually if needed (e.g. make change)
         if (values['make']) {

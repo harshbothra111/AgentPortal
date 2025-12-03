@@ -59,7 +59,7 @@ export class JourneyService {
   });
 
   getJourney(productId: string, onSuccess?: (res: JourneyResponse) => void): void {
-    this.apiService.get<JourneyResponse>(API_ENDPOINTS.JOURNEY.GET_JOURNEY(productId)).subscribe({
+    this.apiService.get<JourneyResponse>(API_ENDPOINTS.JOURNEY.GET(productId)).subscribe({
       next: (response) => {
         this._journey.set(response);
         if (response.submissionData) {
@@ -79,7 +79,7 @@ export class JourneyService {
       stepId: currentJourney?.journeyContext.currentStepId
     };
 
-    return this.apiService.post<JourneyResponse>(API_ENDPOINTS.JOURNEY.SUBMIT_STEP, payload);
+    return this.apiService.post<JourneyResponse>(API_ENDPOINTS.JOURNEY.SUBMIT, payload);
   }
 
   navigateBack(): Observable<JourneyResponse> {

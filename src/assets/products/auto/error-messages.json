@@ -1,0 +1,25 @@
+{
+  "regNumber": {
+    "required": "Registration Number is required.",
+    "uniqueRegistration": "Registration number is already taken."
+  },
+  "regYear": {
+    "required": "Registration Year is required."
+  },
+  "make": {
+    "required": "Make is required."
+  },
+  "model": {
+    "required": "Model is required."
+  },
+  "default": {
+    "required": "{label} is required.",
+    "email": "Please enter a valid email address.",
+    "minlength": "Minimum length is {requiredLength} characters.",
+    "maxlength": "Maximum length is {requiredLength} characters.",
+    "pattern": "Invalid format.",
+    "matDatepickerParse": "Invalid date format.",
+    "matDatepickerMin": "Date is too early.",
+    "matDatepickerMax": "Date is too late."
+  }
+}

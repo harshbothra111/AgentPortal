@@ -7,11 +7,9 @@
     }
   </mat-radio-group>
 
-  @if (control.invalid && (control.dirty || control.touched)) {
+  @if (errorMessage) {
     <div class="text-danger small mt-1" style="font-size: 75%;">
-      @if (control.hasError('required')) {
-        Please select an option.
-      }
+      {{ errorMessage }}
     </div>
   }
 </div>

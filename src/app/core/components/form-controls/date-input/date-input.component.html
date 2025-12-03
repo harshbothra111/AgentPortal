@@ -4,20 +4,9 @@
   <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-datepicker #picker></mat-datepicker>
   
-  @if (control.invalid && (control.dirty || control.touched)) {
+  @if (errorMessage) {
     <mat-error>
-      @if (control.hasError('required')) {
-        {{ label }} is required.
-      }
-      @if (control.hasError('matDatepickerParse')) {
-        Invalid date format.
-      }
-      @if (control.hasError('matDatepickerMin')) {
-        Date is too early.
-      }
-      @if (control.hasError('matDatepickerMax')) {
-        Date is too late.
-      }
+      {{ errorMessage }}
     </mat-error>
   }
 </mat-form-field>

@@ -11,7 +11,7 @@ export const AUTO_ROUTES: Routes = [
   {
     path: '',
     component: JourneyComponent,
-    data: { productId: 'PROD_AUTO_001' },
+    data: { productId: 'PROD_AUTO_001', productName: 'auto' },
     children: [
       { path: '', redirectTo: 'vehicle-identification', pathMatch: 'full' },
       { path: 'vehicle-identification', component: VehicleIdentificationComponent },

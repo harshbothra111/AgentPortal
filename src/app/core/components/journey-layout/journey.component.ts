@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { JourneyService } from '../../services/journey.service';
+import { ErrorMessageService } from '../../services/error-message.service';
 
 @Component({
   selector: 'app-journey',
@@ -13,14 +14,20 @@ import { JourneyService } from '../../services/journey.service';
 })
 export class JourneyComponent implements OnInit {
   journeyService = inject(JourneyService);
+  private errorMessageService = inject(ErrorMessageService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
   ngOnInit() {
     let productId = this.route.snapshot.paramMap.get('productId');
+    let productName = this.route.snapshot.data['productName'];
     
     if (!productId) {
       productId = this.route.snapshot.data['productId'];
+    }
+
+    if (productName) {
+      this.errorMessageService.loadProductMessages(productName);
     }
 
     if (productId) {

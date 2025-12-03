@@ -7,11 +7,9 @@
     }
   </mat-select>
 
-  @if (control.invalid && (control.dirty || control.touched)) {
+  @if (errorMessage) {
     <mat-error>
-      @if (control.hasError('required')) {
-        Please select a {{ label | lowercase }}.
-      }
+      {{ errorMessage }}
     </mat-error>
   }
 </mat-form-field>

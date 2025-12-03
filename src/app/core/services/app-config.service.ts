@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { lastValueFrom } from 'rxjs';
+import { API_ENDPOINTS } from '../config/api-endpoints';
 
 export interface AppConfig {
   apiUrl: string;
@@ -13,14 +13,11 @@ export class AppConfigService {
   private config: AppConfig | null = null;
   private http = inject(HttpClient);
 
-  async loadConfig(): Promise<void> {
-    try {
-      const config = await lastValueFrom(this.http.get<AppConfig>('/assets/config/app.config.json'));
-      this.config = config;
-    } catch (error) {
-      // Fallback or rethrow depending on requirements
-      this.config = { apiUrl: '' }; 
-    }
+  loadConfig(): void {
+    this.http.get<AppConfig>(API_ENDPOINTS.CONFIG.APP)
+      .subscribe((config) => {
+        this.config = config;
+      });
   }
 
   get apiUrl(): string {

@@ -8,17 +8,9 @@
     [placeholder]="placeholder"
   >
   
-  @if (control.invalid && (control.dirty || control.touched)) {
+  @if (errorMessage) {
     <mat-error>
-      @if (control.hasError('required')) {
-        {{ label }} is required.
-      }
-      @if (control.hasError('uniqueRegistration')) {
-        Registration number is already taken.
-      }
-      @if (control.hasError('email')) {
-        Please enter a valid email.
-      }
+      {{ errorMessage }}
     </mat-error>
   }
   @if (control.pending) {
