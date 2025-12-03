@@ -6,6 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { JourneyService } from '../../../../core/services/journey.service';
+import { FieldMetadata } from '../../../../core/models/journey.model';
 import { TextInputComponent } from '../../../../core/components/form-controls/text-input/text-input.component';
 import { DateInputComponent } from '../../../../core/components/form-controls/date-input/date-input.component';
 
@@ -35,17 +36,12 @@ export class PrimaryDriverComponent implements OnInit {
       licenseNumber: ['', Validators.required]
     });
 
-    // Patch values
-    const step = this.journeyService.currentStep();
-    if (step && step.fields) {
-      const values: any = {};
-      step.fields.forEach(field => {
-        if (field.value !== undefined && field.value !== null) {
-          values[field.key] = field.value;
-        }
-      });
-      if (Object.keys(values).length > 0) {
-        this.form.patchValue(values);
+    // Patch values from submission data
+    const submission = this.journeyService.submission();
+    if (submission && submission.drivers) {
+      const primaryDriver = submission.drivers.find((d: any) => d.isPrimary);
+      if (primaryDriver) {
+        this.form.patchValue(primaryDriver);
       }
     }
   }

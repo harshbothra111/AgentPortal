@@ -28,6 +28,7 @@ export class JourneyComponent implements OnInit {
 
     if (productName) {
       this.errorMessageService.loadProductMessages(productName);
+      this.journeyService.loadUiConfig(productName);
     }
 
     if (productId) {

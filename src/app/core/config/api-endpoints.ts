@@ -5,9 +5,11 @@ export const API_ENDPOINTS = {
   JOURNEY: {
     GET: (productId: string) => `/api/journey/${productId}`,
     SUBMIT: '/api/journey/submit',
+    BACK: '/api/journey/back',
   },
   PRODUCT: {
-    ERROR_MESSAGES: (product: string) => `/assets/products/${product}/error-messages.json`
+    ERROR_MESSAGES: (product: string) => `/assets/products/${product}/error-messages.json`,
+    UI_CONFIG: (product: string) => `/assets/products/${product}/auto-ui-config.json`
   },
   VALIDATION: {
     REGISTRATION: (regNo: string) => `/api/validate/registration/${regNo}`

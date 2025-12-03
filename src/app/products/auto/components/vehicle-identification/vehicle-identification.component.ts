@@ -1,59 +1,66 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef, Injector, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { JourneyService } from '../../../../core/services/journey.service';
 import { ApiService } from '../../../../core/services/api.service';
-import { TextInputComponent } from '../../../../core/components/form-controls/text-input/text-input.component';
-import { SelectInputComponent } from '../../../../core/components/form-controls/select-input/select-input.component';
-import { LookupOption } from '../../../../core/models/journey.model';
+import { DynamicFormService } from '../../../../core/services/dynamic-form.service';
+import { DynamicFormComponent } from '../../../../core/components/dynamic-form/dynamic-form.component';
+import { LookupOption, FieldMetadata } from '../../../../core/models/journey.model';
 import { API_ENDPOINTS } from '../../../../core/config/api-endpoints';
 
 @Component({
   selector: 'app-vehicle-identification',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatButtonModule, MatIconModule, TextInputComponent, SelectInputComponent],
+  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatButtonModule, MatIconModule, DynamicFormComponent],
   templateUrl: './vehicle-identification.component.html',
   styleUrl: './vehicle-identification.component.scss'
 })
 export class VehicleIdentificationComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private journeyService = inject(JourneyService);
   private apiService = inject(ApiService);
+  private dynamicFormService = inject(DynamicFormService);
+  private cdr = inject(ChangeDetectorRef);
+  private injector = inject(Injector);
 
-  form!: FormGroup;
-  
-  // Lookups
-  makeOptions: LookupOption[] = [];
-  modelOptions: LookupOption[] = [];
-  yearOptions: LookupOption[] = [];
+  form: FormGroup = new FormGroup({});
+  fields: FieldMetadata[] = [];
+  lookups: { [key: string]: LookupOption[] } = {};
   
   private allModels: LookupOption[] = [];
   private initialRegistrationNumber: string | null = null;
 
   ngOnInit() {
-    this.loadLookups();
-    this.initForm();
-    this.patchData();
+    // Use an effect to react to changes in the current step (which includes merged UI config)
+    effect(() => {
+      const step = this.journeyService.currentStep();
+      if (step && step.fields && step.fields.length > 0) {
+        // Only initialize if fields are present (UI config loaded)
+        this.fields = step.fields;
+        this.loadLookups();
+        this.initForm();
+        this.patchData();
+        this.cdr.detectChanges();
+      }
+    }, { injector: this.injector });
   }
 
   private initForm() {
-    this.form = this.fb.group({
-      registrationNumber: ['', {
-        validators: [Validators.required],
-        asyncValidators: [this.uniqueRegistrationValidator()],
-        updateOn: 'blur'
-      }],
-      make: ['', Validators.required],
-      model: [{ value: '', disabled: true }, Validators.required],
-      variant: [''], // Optional for now
-      registrationYear: ['', Validators.required]
-    });
+    this.form = this.dynamicFormService.createFormGroup(this.fields);
+
+    // Add custom async validator
+    const regControl = this.form.get('registrationNumber');
+    if (regControl) {
+      regControl.setAsyncValidators(this.uniqueRegistrationValidator());
+      // Note: updateOn is already set to 'blur' via config/service
+    }
 
     // Handle cascading dropdown
     this.form.get('make')?.valueChanges.subscribe(make => {
@@ -84,28 +91,24 @@ export class VehicleIdentificationComponent implements OnInit {
   }
 
   private patchData() {
-    // Patch values if available from server
-    const step = this.journeyService.currentStep();
-    if (step && step.fields) {
-      const values: any = {};
-      step.fields.forEach(field => {
-        if (field.value !== undefined && field.value !== null) {
-          values[field.key] = field.value;
-        }
-      });
-      if (Object.keys(values).length > 0) {
-        if (values['registrationNumber']) {
-          this.initialRegistrationNumber = values['registrationNumber'];
-        }
-        this.form.patchValue(values);
-        // Trigger change detection logic manually if needed (e.g. make change)
-        if (values['make']) {
-           this.onMakeChange(values['make']);
-           // Re-patch model since onMakeChange might reset it
-           if (values['model']) {
-             this.form.get('model')?.setValue(values['model']);
-           }
-        }
+    // Patch values from submission data
+    const submission = this.journeyService.submission();
+    if (submission && submission.vehicle) {
+      const values = submission.vehicle;
+      
+      if (values['registrationNumber']) {
+        this.initialRegistrationNumber = values['registrationNumber'];
+      }
+      
+      this.form.patchValue(values);
+      
+      // Trigger change detection logic manually if needed
+      if (values['make']) {
+         this.onMakeChange(values['make']);
+         // Re-patch model since onMakeChange might reset it
+         if (values['model']) {
+           this.form.get('model')?.setValue(values['model']);
+         }
       }
     }
   }
@@ -113,9 +116,10 @@ export class VehicleIdentificationComponent implements OnInit {
   private loadLookups() {
     const workflow = this.journeyService.currentWorkflow();
     if (workflow && workflow.lookups) {
-      this.makeOptions = workflow.lookups['make'] || [];
-      this.yearOptions = workflow.lookups['registrationYear'] || [];
+      this.lookups = { ...workflow.lookups };
       this.allModels = workflow.lookups['model'] || [];
+      // Initialize model lookup as empty until make is selected
+      this.lookups['model'] = [];
     }
   }
 
@@ -125,14 +129,18 @@ export class VehicleIdentificationComponent implements OnInit {
     
     if (make) {
       modelControl?.enable();
-      this.modelOptions = this.allModels.filter(m => m['make'] === make);
+      const filteredModels = this.allModels.filter(m => m['make'] === make);
       
-      if (this.modelOptions.length === 0) {
-         this.modelOptions = [{ code: 'OTH', label: 'Other' }];
-      }
+      this.lookups = {
+        ...this.lookups,
+        model: filteredModels.length > 0 ? filteredModels : [{ code: 'OTH', label: 'Other' }]
+      };
     } else {
       modelControl?.disable();
-      this.modelOptions = [];
+      this.lookups = {
+        ...this.lookups,
+        model: []
+      };
     }
   }
 

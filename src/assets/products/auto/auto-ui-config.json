@@ -1,0 +1,59 @@
+{
+  "workflows": [
+    {
+      "workflowId": "wf_vehicle_details",
+      "steps": [
+        {
+          "stepId": "step_vehicle_identification",
+          "fields": [
+            {
+              "key": "registrationNumber",
+              "id": "regNumber",
+              "label": "Registration Number",
+              "type": "text",
+              "visible": true,
+              "editable": true,
+              "required": true,
+              "order": 1,
+              "updateOn": "blur"
+            },
+            {
+              "key": "registrationYear",
+              "id": "regYear",
+              "label": "Registration Year",
+              "type": "select",
+              "visible": true,
+              "editable": true,
+              "required": true,
+              "order": 2,
+              "lookupKey": "registrationYear"
+            },
+            {
+              "key": "make",
+              "id": "make",
+              "label": "Make",
+              "type": "select",
+              "visible": true,
+              "editable": true,
+              "required": true,
+              "order": 3,
+              "onChange": "refresh",
+              "lookupKey": "make"
+            },
+            {
+              "key": "model",
+              "id": "model",
+              "label": "Model",
+              "type": "select",
+              "visible": true,
+              "editable": true,
+              "required": true,
+              "order": 4,
+              "lookupKey": "model"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

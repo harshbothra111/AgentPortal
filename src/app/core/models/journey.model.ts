@@ -69,13 +69,17 @@ export interface StepMetadata {
 export interface FieldMetadata {
   key: string;
   id: string;
-  type?: string; // Optional hint for UI renderer (text, select, radio, etc.)
+  label: string; // Added for UI
+  type?: string; // text, select, radio, date
   visible: boolean;
   editable: boolean;
   required?: boolean;
   order?: number;
   onChange?: 'refresh' | 'validate' | 'none';
   value?: any; // Value for binding
+  lookupKey?: string; // Key to find options in Workflow.lookups
+  options?: LookupOption[]; // Direct options if not using lookupKey
+  updateOn?: 'change' | 'blur' | 'submit';
 }
 
 export interface LookupOption {

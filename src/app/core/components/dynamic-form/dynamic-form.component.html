@@ -1,0 +1,48 @@
+<div class="row g-3" [formGroup]="form">
+  @for (field of sortedFields; track field.id) {
+    @if (field.visible && form.get(field.key)) {
+      <div class="col-12 col-md-6">
+        @switch (field.type) {
+          @case ('text') {
+            <app-text-input
+              [control]="$any(form.get(field.key))"
+              [label]="field.label"
+              [id]="field.id">
+            </app-text-input>
+          }
+          @case ('select') {
+            <app-select-input
+              [control]="$any(form.get(field.key))"
+              [label]="field.label"
+              [id]="field.id"
+              [options]="getOptions(field)">
+            </app-select-input>
+          }
+          @case ('date') {
+            <app-date-input
+              [control]="$any(form.get(field.key))"
+              [label]="field.label"
+              [id]="field.id">
+            </app-date-input>
+          }
+          @case ('radio') {
+            <app-radio-input
+              [control]="$any(form.get(field.key))"
+              [label]="field.label"
+              [id]="field.id"
+              [options]="getOptions(field)">
+            </app-radio-input>
+          }
+          @default {
+            <!-- Fallback to text input if type is unknown or missing -->
+            <app-text-input
+              [control]="$any(form.get(field.key))"
+              [label]="field.label"
+              [id]="field.id">
+            </app-text-input>
+          }
+        }
+      </div>
+    }
+  }
+</div>

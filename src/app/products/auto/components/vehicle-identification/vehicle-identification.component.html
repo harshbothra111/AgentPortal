@@ -6,43 +6,12 @@
   
   <mat-card-content class="pt-3">
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <div class="row g-3">
-        <div class="col-12 col-md-6">
-          <app-text-input 
-            [control]="$any(form.get('registrationNumber'))" 
-            label="Registration Number" 
-            id="regNumber"
-            placeholder="e.g. AB12CD3456">
-          </app-text-input>
-        </div>
-        
-        <div class="col-12 col-md-6">
-          <app-select-input 
-            [control]="$any(form.get('registrationYear'))" 
-            label="Registration Year" 
-            id="regYear"
-            [options]="yearOptions">
-          </app-select-input>
-        </div>
-
-        <div class="col-12 col-md-6">
-          <app-select-input 
-            [control]="$any(form.get('make'))" 
-            label="Make" 
-            id="make"
-            [options]="makeOptions">
-          </app-select-input>
-        </div>
-
-        <div class="col-12 col-md-6">
-          <app-select-input 
-            [control]="$any(form.get('model'))" 
-            label="Model" 
-            id="model"
-            [options]="modelOptions">
-          </app-select-input>
-        </div>
-      </div>
+      
+      <app-dynamic-form 
+        [fields]="fields" 
+        [form]="form" 
+        [lookups]="lookups">
+      </app-dynamic-form>
 
       <div class="d-flex justify-content-end align-items-center mt-4 gap-3">
         <button mat-flat-button color="primary" type="submit">

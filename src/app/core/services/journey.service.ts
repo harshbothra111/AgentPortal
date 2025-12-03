@@ -15,9 +15,11 @@ export class JourneyService {
   // State signals
   private _journey = signal<JourneyResponse | null>(null);
   private _submission = signal<any>(null); // Store generic domain model
+  private _uiConfig = signal<any>(null);
   
   public readonly journey = this._journey.asReadonly();
   public readonly submission = this._submission.asReadonly();
+  public readonly uiConfig = this._uiConfig.asReadonly();
   
   public readonly currentWorkflow = computed(() => {
     const j = this._journey();
@@ -29,7 +31,20 @@ export class JourneyService {
     const wf = this.currentWorkflow();
     const j = this._journey();
     if (!wf || !j) return null;
-    return wf.steps?.find(s => s.stepId === j.journeyContext.currentStepId) || null;
+    
+    const step = wf.steps?.find(s => s.stepId === j.journeyContext.currentStepId) || null;
+    
+    // Merge UI config fields if available
+    const config = this._uiConfig();
+    if (step && config) {
+      const configWorkflow = config.workflows.find((w: any) => w.workflowId === wf.workflowId);
+      const configStep = configWorkflow?.steps.find((s: any) => s.stepId === step.stepId);
+      if (configStep && configStep.fields) {
+        return { ...step, fields: configStep.fields };
+      }
+    }
+    
+    return step;
   });
 
   public readonly progress = computed(() => {
@@ -57,6 +72,12 @@ export class JourneyService {
     
     return Math.round((completedCount / totalWorkflows) * 100);
   });
+
+  loadUiConfig(productName: string): void {
+    this.apiService.get<any>(API_ENDPOINTS.PRODUCT.UI_CONFIG(productName)).subscribe(config => {
+      this._uiConfig.set(config);
+    });
+  }
 
   getJourney(productId: string, onSuccess?: (res: JourneyResponse) => void): void {
     this.apiService.get<JourneyResponse>(API_ENDPOINTS.JOURNEY.GET(productId)).subscribe({
@@ -139,8 +160,23 @@ export class JourneyService {
   }
 
   goBack() {
-    this.navigateBack().subscribe(response => {
-      this.handleNavigation(response);
+    const currentJourney = this._journey();
+    const payload = currentJourney ? { 
+      journeyContext: currentJourney.journeyContext,
+      product: currentJourney.product
+    } : {};
+
+    this.apiService.post<JourneyResponse>(API_ENDPOINTS.JOURNEY.BACK, payload).subscribe({
+      next: (response) => {
+        this._journey.set(response);
+        if (response.submissionData) {
+          this._submission.set(response.submissionData);
+        }
+        this.handleNavigation(response);
+      },
+      error: (err) => {
+        console.error('Error navigating back', err);
+      }
     });
   }
 

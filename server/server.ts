@@ -153,20 +153,9 @@ app.get('/api/journey/:productId', (req: Request, res: Response) => {
         return;
     }
     
-    // Re-read file to reset state
-    try {
-        const rawData = fs.readFileSync(dataPath, 'utf-8');
-        journeyState = JSON.parse(rawData);
-        // Reset domain model
-        submissionData = {
-            vehicle: {},
-            drivers: [],
-            coverage: {}
-        };
-    } catch (err) {
-        res.status(500).json({ error: 'Error reloading journey data' });
-        return;
-    }
+    // Note: We do NOT reset the state here anymore, so that 'back' navigation
+    // can fetch the current state (including submission data) from the server.
+    // To reset, restart the server or we could add a specific reset endpoint.
 
     const response = createResponseView();
     setTimeout(() => res.json(response), 500); // Simulate delay
@@ -240,12 +229,19 @@ app.post('/api/journey/submit', (req: Request, res: Response) => {
 });
 
 app.post('/api/journey/back', (req: Request, res: Response) => {
+    const { journeyContext, product } = req.body;
+
+    // If journeyState is missing but we have product info, we could try to reload it here
+    // For now, we'll stick to the existing check but log the product context
     if (!journeyState) {
+        console.warn('Journey state missing during back navigation. Product context:', product);
         res.status(500).json({ error: 'Journey data not loaded' });
         return;
     }
 
-    const currentStepId = journeyState.journeyContext.currentStepId;
+    // Use client's current step if provided, otherwise fallback to server state
+    const currentStepId = journeyContext?.currentStepId || journeyState.journeyContext.currentStepId;
+
     const previousStepId = calculatePreviousStep(currentStepId);
 
     if (previousStepId) {
